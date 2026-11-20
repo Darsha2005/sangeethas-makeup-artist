@@ -1,0 +1,4161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sangeetha's Makeup Artist – Premium Booking & Business Management</title>
+  
+  <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ==========================================================================
+       LUXURY DESIGN SYSTEM & THEME VARIABLES
+       ========================================================================== */
+    :root {
+      /* Emerald Green Palette */
+      --emerald-950: #061c15;
+      --emerald-900: #0a2920;
+      --emerald-850: #0d362b;
+      --emerald-800: #0f4033;
+      --emerald-700: #145443;
+      --emerald-600: #1b6f59;
+      --emerald-500: #269176;
+      --emerald-100: #e3f2ed;
+      --emerald-50:  #f0f8f5;
+
+      /* Champagne Gold Palette */
+      --gold-700: #8a681c;
+      --gold-600: #ad8324;
+      --gold-500: #d4af37;
+      --gold-400: #e2c45c;
+      --gold-300: #edd88b;
+      --gold-200: #f5e9bd;
+      --gold-100: #fbf6e5;
+      --gold-50:  #fdfcf7;
+
+      /* Neutral & Ivory Backgrounds */
+      --ivory-bg:     #f8f6f0;
+      --ivory-card:   #ffffff;
+      --ivory-border: #e8e3d5;
+      --text-main:    #16201c;
+      --text-muted:   #5e6e66;
+      --text-light:   #8a9c94;
+
+      /* Status Accents */
+      --status-paid-bg: #e6f9f0;
+      --status-paid-text: #0b7a47;
+      --status-partial-bg: #fff8e6;
+      --status-partial-text: #b45309;
+      --status-pending-bg: #fef2f2;
+      --status-pending-text: #b91c1c;
+      --status-confirmed-bg: #ecfdf5;
+      --status-confirmed-text: #047857;
+      --status-cancelled-bg: #f3f4f6;
+      --status-cancelled-text: #4b5563;
+
+      /* Gradients */
+      --grad-sidebar: linear-gradient(180deg, #09261e 0%, #061914 100%);
+      --grad-gold: linear-gradient(135deg, #d4af37 0%, #edd88b 50%, #c9a029 100%);
+      --grad-gold-soft: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(237,216,139,0.06) 100%);
+      --grad-emerald-card: linear-gradient(135deg, #0f4033 0%, #0a2b22 100%);
+      --grad-ivory-header: linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%);
+
+      /* Shadows */
+      --shadow-sm: 0 2px 6px rgba(10, 41, 32, 0.04);
+      --shadow-md: 0 6px 18px rgba(10, 41, 32, 0.06);
+      --shadow-lg: 0 14px 34px rgba(10, 41, 32, 0.09);
+      --shadow-gold: 0 6px 20px rgba(212, 175, 55, 0.25);
+
+      /* Typography & Layout */
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-brand: 'Cinzel', serif;
+      --sidebar-width: 270px;
+      --header-height: 72px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    /* ==========================================================================
+       GLOBAL RESETS & BASE STYLES
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--ivory-bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    input, select, textarea, button {
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1ede4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c5bca9;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gold-600);
+    }
+
+    /* ==========================================================================
+       APP LAYOUT (SIDEBAR & MAIN VIEW)
+       ========================================================================== */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* SIDEBAR */
+    .app-sidebar {
+      width: var(--sidebar-width);
+      background: var(--grad-sidebar);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      border-right: 1px solid rgba(212, 175, 55, 0.2);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .brand-header {
+      padding: 24px 22px 20px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--grad-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--emerald-950);
+      box-shadow: var(--shadow-gold);
+      flex-shrink: 0;
+    }
+
+    .brand-titles h1 {
+      font-family: var(--font-brand);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .brand-titles span {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold-400);
+      font-weight: 600;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 18px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      color: #cfd8d4;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #ffffff;
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.22) 0%, rgba(212, 175, 55, 0.05) 100%);
+      color: #ffffff;
+      font-weight: 600;
+      border-left: 3.5px solid var(--gold-400);
+    }
+
+    .nav-item.active i, .nav-item.active .lucide {
+      color: var(--gold-400);
+    }
+
+    .nav-item .badge {
+      margin-left: auto;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--gold-500);
+      color: var(--emerald-950);
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(212, 175, 55, 0.15);
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .sync-status-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(212, 175, 55, 0.12);
+      font-size: 0.78rem;
+    }
+
+    .sync-indicator {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .sync-indicator.demo {
+      background: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    .sync-indicator.error {
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    /* MAIN CONTENT */
+    .app-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--ivory-bg);
+      min-height: 100vh;
+    }
+
+    /* TOP HEADER */
+    .top-header {
+      height: var(--header-height);
+      background: var(--grad-ivory-header);
+      border-bottom: 1px solid var(--ivory-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      color: var(--emerald-900);
+      font-size: 1.3rem;
+      padding: 6px;
+    }
+
+    .page-title-box h2 {
+      font-family: var(--font-brand);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--emerald-950);
+      letter-spacing: 0.5px;
+    }
+
+    .page-title-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .date-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: #ffffff;
+      border: 1px solid var(--ivory-border);
+      border-radius: 30px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--emerald-850);
+    }
+
+    .header-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.25s ease;
+    }
+
+    .btn-gold {
+      background: var(--grad-gold);
+      color: var(--emerald-950);
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-gold:hover {
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-emerald {
+      background: var(--emerald-800);
+      color: #ffffff;
+    }
+
+    .btn-emerald:hover {
+      background: var(--emerald-700);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border: 1px solid var(--ivory-border);
+      color: var(--emerald-900);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold-500);
+      background: var(--gold-50);
+    }
+
+    /* CONTENT WRAPPER */
+    .content-body {
+      padding: 28px 32px 48px;
+      flex: 1;
+    }
+
+    /* TAB CONTENT PANES */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       CARDS & KPI WIDGETS
+       ========================================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--grad-gold);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .kpi-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--emerald-50);
+      color: var(--emerald-800);
+    }
+
+    .kpi-icon-wrap.gold {
+      background: var(--gold-100);
+      color: var(--gold-700);
+    }
+
+    .kpi-value {
+      font-family: var(--font-body);
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--emerald-950);
+      letter-spacing: -0.5px;
+    }
+
+    .kpi-sub {
+      font-size: 0.76rem;
+      color: var(--text-light);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* CARD PANELS */
+    .dashboard-panel {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--ivory-border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .panel-title {
+      font-family: var(--font-brand);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--emerald-950);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* CHARTS GRID */
+    .charts-grid-2 {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 22px;
+      margin-bottom: 26px;
+    }
+
+    .charts-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 22px;
+      margin-bottom: 26px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 270px;
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       DATA TABLES & BADGES
+       ========================================================================== */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--ivory-border);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    table.data-table th {
+      background: #fbf9f4;
+      color: var(--emerald-900);
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 13px 16px;
+      border-bottom: 2px solid var(--ivory-border);
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid #f0ecdf;
+      color: var(--text-main);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    table.data-table tbody tr:hover {
+      background-color: #faf8f2;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-paid {
+      background: var(--status-paid-bg);
+      color: var(--status-paid-text);
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-partial {
+      background: var(--status-partial-bg);
+      color: var(--status-partial-text);
+      border: 1px solid #fde68a;
+    }
+
+    .badge-pending {
+      background: var(--status-pending-bg);
+      color: var(--status-pending-text);
+      border: 1px solid #fecaca;
+    }
+
+    .badge-confirmed {
+      background: var(--status-confirmed-bg);
+      color: var(--status-confirmed-text);
+      border: 1px solid #6ee7b7;
+    }
+
+    .badge-cancelled {
+      background: var(--status-cancelled-bg);
+      color: var(--status-cancelled-text);
+      border: 1px solid #e5e7eb;
+    }
+
+    .action-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f7f5ed;
+      color: var(--emerald-900);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      border: 1px solid var(--ivory-border);
+    }
+
+    .action-icon-btn:hover {
+      background: var(--gold-500);
+      color: var(--emerald-950);
+      border-color: var(--gold-600);
+    }
+
+    .action-icon-btn.danger:hover {
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+
+    /* ==========================================================================
+       FORMS & INPUT CONTROLS
+       ========================================================================== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--emerald-950);
+      letter-spacing: 0.2px;
+    }
+
+    .form-label span.req {
+      color: #ef4444;
+    }
+
+    .form-control {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #d5cebe;
+      background: #ffffff;
+      color: var(--text-main);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--gold-500);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* LIVE PREVIEW BOX */
+    .calc-preview-card {
+      background: var(--grad-gold-soft);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .calc-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calc-stat-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--gold-700);
+      letter-spacing: 0.6px;
+    }
+
+    .calc-stat-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--emerald-950);
+    }
+
+    /* ==========================================================================
+       CALENDAR VIEW
+       ========================================================================== */
+    .calendar-container {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--ivory-border);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .cal-header-day {
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: var(--emerald-900);
+      padding: 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: #faf7ef;
+      border-radius: 6px;
+    }
+
+    .cal-cell {
+      min-height: 100px;
+      border: 1px solid #eee8dc;
+      border-radius: 10px;
+      padding: 8px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+
+    .cal-cell:hover {
+      background: #faf8f2;
+      border-color: var(--gold-400);
+    }
+
+    .cal-cell.other-month {
+      background: #f9f8f5;
+      opacity: 0.45;
+    }
+
+    .cal-cell.today {
+      border: 2px solid var(--gold-500);
+      background: #fffdf8;
+    }
+
+    .cal-cell-date {
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: var(--emerald-950);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cal-event-pill {
+      font-size: 0.7rem;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .cal-event-pill.confirmed {
+      background: #ecfdf5;
+      color: #047857;
+      border-left: 3px solid #10b981;
+    }
+
+    .cal-event-pill.pending {
+      background: #fffbeb;
+      color: #b45309;
+      border-left: 3px solid #f59e0b;
+    }
+
+    .cal-event-pill.completed {
+      background: #eef2ff;
+      color: #3730a3;
+      border-left: 3px solid #6366f1;
+    }
+
+    .cal-event-pill.cancelled {
+      background: #f3f4f6;
+      color: #6b7280;
+      border-left: 3px solid #9ca3af;
+    }
+
+    /* ==========================================================================
+       MODALS & SLIDEOVERS
+       ========================================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(6, 28, 21, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--ivory-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--grad-ivory-header);
+    }
+
+    .modal-title {
+      font-family: var(--font-brand);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--emerald-950);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      padding: 4px;
+      border-radius: 6px;
+    }
+
+    .modal-close-btn:hover {
+      background: #f0ece3;
+      color: var(--emerald-950);
+    }
+
+    .modal-body {
+      padding: 24px 26px;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 16px 26px;
+      border-top: 1px solid var(--ivory-border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background: #fbf9f4;
+    }
+
+    /* TOAST ALERTS */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      min-width: 290px;
+      max-width: 380px;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border-left: 4px solid var(--gold-500);
+      font-size: 0.88rem;
+      font-weight: 600;
+      animation: slideInRight 0.3s ease;
+      transition: all 0.3s ease;
+    }
+
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+    .toast.warning { border-left-color: #f59e0b; }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       PRINT RECEIPT STYLES
+       ========================================================================== */
+    #print-receipt-section {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-receipt-section, #print-receipt-section * {
+        visibility: visible;
+      }
+      #print-receipt-section {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 30px;
+        background: #ffffff;
+        color: #000000;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    .receipt-container {
+      max-width: 650px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      font-family: var(--font-body);
+    }
+
+    .receipt-header {
+      text-align: center;
+      border-bottom: 2px dashed #d1d5db;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+
+    .receipt-brand-title {
+      font-family: var(--font-brand);
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #0f4033;
+    }
+
+    .receipt-brand-sub {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ad8324;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .charts-grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .app-sidebar {
+        transform: translateX(-100%);
+      }
+      .app-sidebar.open {
+        transform: translateX(0);
+      }
+      .app-main {
+        margin-left: 0;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .content-body {
+        padding: 20px 18px 40px;
+      }
+      .top-header {
+        padding: 0 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .cal-cell {
+        min-height: 60px;
+        padding: 4px;
+      }
+      .cal-event-pill {
+        font-size: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- ========================================================================
+       SIDEBAR NAVIGATION
+       ======================================================================== -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="brand-header">
+      <div class="brand-logo-icon">
+        <i data-lucide="sparkles" style="width: 24px; height: 24px;"></i>
+      </div>
+      <div class="brand-titles">
+        <h1>SANGEETHA'S</h1>
+        <span>Makeup Artist</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+        <i data-lucide="layout-dashboard" style="width: 19px; height: 19px;"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="#new-booking" class="nav-item" data-tab="new-booking" id="navNewBooking">
+        <i data-lucide="calendar-plus" style="width: 19px; height: 19px;"></i>
+        <span>New Booking</span>
+      </a>
+
+      <a href="#all-bookings" class="nav-item" data-tab="all-bookings">
+        <i data-lucide="book-open" style="width: 19px; height: 19px;"></i>
+        <span>All Bookings</span>
+        <span class="badge" id="sidebarBookingCount">0</span>
+      </a>
+
+      <a href="#calendar" class="nav-item" data-tab="calendar">
+        <i data-lucide="calendar-days" style="width: 19px; height: 19px;"></i>
+        <span>Calendar</span>
+      </a>
+
+      <a href="#payments" class="nav-item" data-tab="payments">
+        <i data-lucide="credit-card" style="width: 19px; height: 19px;"></i>
+        <span>Payments</span>
+      </a>
+
+      <a href="#staff-earnings" class="nav-item" data-tab="staff-earnings">
+        <i data-lucide="users" style="width: 19px; height: 19px;"></i>
+        <span>Staff Earnings</span>
+      </a>
+
+      <a href="#gods-tithe" class="nav-item" data-tab="gods-tithe">
+        <i data-lucide="heart-handshake" style="width: 19px; height: 19px;"></i>
+        <span>God's Tithe</span>
+      </a>
+
+      <a href="#reports" class="nav-item" data-tab="reports">
+        <i data-lucide="bar-chart-3" style="width: 19px; height: 19px;"></i>
+        <span>Reports</span>
+      </a>
+
+      <a href="#settings" class="nav-item" data-tab="settings">
+        <i data-lucide="settings" style="width: 19px; height: 19px;"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sync-status-card" id="sidebarSyncCard" style="cursor: pointer;" onclick="app.showTab('settings');">
+        <div class="sync-indicator demo" id="sidebarSyncIndicator"></div>
+        <div style="flex: 1; overflow: hidden;">
+          <div style="font-weight: 700; color: #ffffff;" id="sidebarSyncTitle">Local / Demo Mode</div>
+          <div style="color: #9eb1a9; font-size: 0.7rem;" id="sidebarSyncSubtitle">Click to connect Sheets</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       MAIN APPLICATION AREA
+       ======================================================================== -->
+  <main class="app-main">
+    
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="page-title-box">
+          <h2 id="pageMainHeading">Executive Dashboard</h2>
+          <p id="pageMainSub">Premium bridal & business finance management</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="date-badge" id="currentDatePill">
+          <i data-lucide="calendar" style="width: 15px; height: 15px; color: var(--gold-600);"></i>
+          <span id="headerLiveDate">--/--/----</span>
+        </div>
+
+        <button class="header-btn btn-gold" onclick="app.openNewBookingForm();">
+          <i data-lucide="plus-circle" style="width: 17px; height: 17px;"></i>
+          <span>Add Booking</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <div class="content-body">
+
+      <!-- ====================================================================
+           TAB 1: DASHBOARD
+           ==================================================================== -->
+      <section class="tab-pane active" id="tab-dashboard">
+        
+        <!-- DASHBOARD FILTER BAR -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn-outline header-btn" style="padding: 6px 14px; font-size: 0.82rem;" onclick="app.setDashboardFilter('all', this)" id="dashFilterAll">All Time</button>
+            <button class="btn-outline header-btn" style="padding: 6px 14px; font-size: 0.82rem;" onclick="app.setDashboardFilter('today', this)">Today</button>
+            <button class="btn-outline header-btn" style="padding: 6px 14px; font-size: 0.82rem;" onclick="app.setDashboardFilter('week', this)">This Week</button>
+            <button class="btn-outline header-btn" style="padding: 6px 14px; font-size: 0.82rem;" onclick="app.setDashboardFilter('month', this)">This Month</button>
+            <button class="btn-outline header-btn" style="padding: 6px 14px; font-size: 0.82rem;" onclick="app.setDashboardFilter('year', this)">This Year</button>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;" id="dashboardFilterLabel">
+            Showing all-time records
+          </div>
+        </div>
+
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Total Bookings</span>
+              <div class="kpi-icon-wrap"><i data-lucide="calendar-check"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiTotalBookings">0</div>
+            <div class="kpi-sub"><span id="kpiConfirmedBookings">0 Confirmed</span></div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Total Revenue</span>
+              <div class="kpi-icon-wrap gold"><i data-lucide="indian-rupee"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiTotalRevenue">₹0</div>
+            <div class="kpi-sub">Gross booking contract value</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Advance Received</span>
+              <div class="kpi-icon-wrap"><i data-lucide="wallet"></i></div>
+            </div>
+            <div class="kpi-value" style="color: #0b7a47;" id="kpiTotalAdvance">₹0</div>
+            <div class="kpi-sub">Total collected cash & bank</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Pending Balance</span>
+              <div class="kpi-icon-wrap"><i data-lucide="clock-alert"></i></div>
+            </div>
+            <div class="kpi-value" style="color: #b91c1c;" id="kpiTotalBalance">₹0</div>
+            <div class="kpi-sub">Outstanding collection due</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Sangeetha Earnings</span>
+              <div class="kpi-icon-wrap"><i data-lucide="user-check"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiSangeetha">₹0</div>
+            <div class="kpi-sub">Lead Makeup Artist Share</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Rizwana Earnings</span>
+              <div class="kpi-icon-wrap"><i data-lucide="user"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiRizwana">₹0</div>
+            <div class="kpi-sub">Senior Artist Share</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">God's Tithe (1%)</span>
+              <div class="kpi-icon-wrap gold"><i data-lucide="heart"></i></div>
+            </div>
+            <div class="kpi-value" style="color: var(--gold-700);" id="kpiGodsTithe">₹0</div>
+            <div class="kpi-sub">Strictly 1% of total contracts</div>
+          </div>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <div class="charts-grid-2">
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3 class="panel-title"><i data-lucide="trending-up"></i> Monthly Revenue Trend</h3>
+            </div>
+            <div class="chart-container">
+              <canvas id="chartMonthlyRevenue"></canvas>
+            </div>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3 class="panel-title"><i data-lucide="pie-chart"></i> Payment Status</h3>
+            </div>
+            <div class="chart-container">
+              <canvas id="chartPaymentStatus"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-grid-3">
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3 class="panel-title"><i data-lucide="bar-chart-2"></i> Bookings by Month</h3>
+            </div>
+            <div class="chart-container" style="height: 220px;">
+              <canvas id="chartMonthlyBookings"></canvas>
+            </div>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3 class="panel-title"><i data-lucide="sparkles"></i> Event Type Distribution</h3>
+            </div>
+            <div class="chart-container" style="height: 220px;">
+              <canvas id="chartEventTypes"></canvas>
+            </div>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3 class="panel-title"><i data-lucide="users"></i> Staff Earnings Comparison</h3>
+            </div>
+            <div class="chart-container" style="height: 220px;">
+              <canvas id="chartStaffComparison"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPCOMING & RECENT BOOKINGS -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="clock"></i> Upcoming Events & Recent Bookings</h3>
+            <button class="btn-outline header-btn" style="padding: 6px 14px; font-size: 0.82rem;" onclick="app.showTab('all-bookings')">View All</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table" id="tableDashboardRecent">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Event</th>
+                  <th>Time</th>
+                  <th>Total</th>
+                  <th>Advance</th>
+                  <th>Balance</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyDashboardRecent">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: NEW / EDIT BOOKING FORM
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-new-booking">
+        <div class="dashboard-panel" style="max-width: 920px; margin: 0 auto;">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title" id="bookingFormHeading"><i data-lucide="calendar-plus"></i> Create New Booking</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Enter complete bridal client details and payment particulars.</p>
+            </div>
+            <button class="btn-outline header-btn" onclick="app.resetBookingForm();" type="button">Clear Form</button>
+          </div>
+
+          <form id="bookingForm" onsubmit="app.handleBookingSubmit(event);">
+            <input type="hidden" id="formBookingID" value="">
+
+            <div class="form-grid">
+              
+              <!-- Customer Details -->
+              <div class="form-group">
+                <label class="form-label">Customer Name <span class="req">*</span></label>
+                <input type="text" class="form-control" id="formCustomer" required placeholder="e.g. Priyadharshini M.">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Mobile Number <span class="req">*</span></label>
+                <input type="tel" class="form-control" id="formPhone" required placeholder="e.g. 9876543210" pattern="[0-9]{10}">
+                <span class="form-hint">10-digit mobile number</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Event Type <span class="req">*</span></label>
+                <select class="form-control" id="formEventType" onchange="app.handleEventTypeChange(this.value);" required>
+                  <option value="Bridal Makeup">Bridal Makeup</option>
+                  <option value="Muhurtham Makeup">Muhurtham Makeup</option>
+                  <option value="Reception Makeup">Reception Makeup</option>
+                  <option value="Engagement Makeup">Engagement Makeup</option>
+                  <option value="Baby Shower Makeup">Baby Shower Makeup</option>
+                  <option value="Puberty Function Makeup">Puberty Function Makeup</option>
+                  <option value="Bridesmaid Makeup">Bridesmaid Makeup</option>
+                  <option value="Groom Makeup">Groom Makeup</option>
+                  <option value="Other">Other (Custom Type)</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="formCustomEventTypeGroup" style="display: none;">
+                <label class="form-label">Specify Event Type <span class="req">*</span></label>
+                <input type="text" class="form-control" id="formCustomEventType" placeholder="Enter custom event type">
+              </div>
+
+              <!-- EXACT DATE & TIME PRESERVATION -->
+              <div class="form-group">
+                <label class="form-label">Event Date <span class="req">*</span></label>
+                <input type="date" class="form-control" id="formEventDate" required>
+                <span class="form-hint">Preserved strictly as YYYY-MM-DD (No timezone shift)</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Event Time <span class="req">*</span></label>
+                <input type="time" class="form-control" id="formEventTime" required>
+                <span class="form-hint">Stored strictly as HH:mm (12H display format)</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Event Location <span class="req">*</span></label>
+                <input type="text" class="form-control" id="formLocation" required placeholder="e.g. Sri Krishna Kalyana Mandapam, Chennai">
+              </div>
+
+              <!-- Financial Breakdown -->
+              <div class="form-group">
+                <label class="form-label">Total Booking Amount (₹) <span class="req">*</span></label>
+                <input type="number" class="form-control" id="formTotalAmount" min="0" step="1" required placeholder="15000" oninput="app.recalcFormPreview();">
+              </div>
+
+              <div class="form-group" id="initialAdvanceGroup">
+                <label class="form-label">Initial Advance Received (₹)</label>
+                <input type="number" class="form-control" id="formInitialAdvance" min="0" step="1" placeholder="5000" oninput="app.recalcFormPreview();">
+                <span class="form-hint">First advance payment will be recorded automatically</span>
+              </div>
+
+              <div class="form-group" id="paymentMethodGroup">
+                <label class="form-label">Payment Method</label>
+                <select class="form-control" id="formPaymentMethod">
+                  <option value="UPI">UPI / GPay / PhonePe</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Bank Transfer">Bank Transfer / NEFT</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Staff Earnings Breakdown -->
+              <div class="form-group">
+                <label class="form-label">Sangeetha Earnings (₹)</label>
+                <input type="number" class="form-control" id="formSangeetha" min="0" step="1" placeholder="0" oninput="app.recalcFormPreview();">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Rizwana Earnings (₹)</label>
+                <input type="number" class="form-control" id="formRizwana" min="0" step="1" placeholder="0" oninput="app.recalcFormPreview();">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Confirmation Status</label>
+                <select class="form-control" id="formConfirmation">
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label">Additional Notes & Service Particulars</label>
+                <textarea class="form-control" id="formNotes" rows="3" placeholder="e.g. Saree draping included, HD Airbrush requested, 2 extra family members..."></textarea>
+              </div>
+            </div>
+
+            <!-- LIVE CALCULATION & TITHE PREVIEW -->
+            <div class="calc-preview-card">
+              <div class="calc-stat-item">
+                <span class="calc-stat-label">God's Tithe (1%)</span>
+                <span class="calc-stat-val" style="color: var(--gold-700);" id="previewTithe">₹0</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">1% of Full Booking Amount</span>
+              </div>
+
+              <div class="calc-stat-item">
+                <span class="calc-stat-label">Advance / Paid</span>
+                <span class="calc-stat-val" style="color: #0b7a47;" id="previewPaid">₹0</span>
+              </div>
+
+              <div class="calc-stat-item">
+                <span class="calc-stat-label">Balance Outstanding</span>
+                <span class="calc-stat-val" style="color: #b91c1c;" id="previewBalance">₹0</span>
+              </div>
+
+              <div class="calc-stat-item">
+                <span class="calc-stat-label">Total Staff Allocation</span>
+                <span class="calc-stat-val" style="color: var(--emerald-800);" id="previewStaff">₹0</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Sangeetha + Rizwana</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; justify-content: flex-end; gap: 14px; margin-top: 26px;">
+              <button type="button" class="btn-outline header-btn" onclick="app.showTab('all-bookings');">Cancel</button>
+              <button type="submit" class="btn-gold header-btn" id="saveBookingSubmitBtn">
+                <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i>
+                <span id="saveBookingBtnText">Confirm & Save Booking</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: ALL BOOKINGS TABLE
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-all-bookings">
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="book-open"></i> All Booking Records</h3>
+            
+            <div class="panel-actions">
+              <button class="btn-outline header-btn" onclick="app.exportBookingsCSV();">
+                <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                <span>Export CSV</span>
+              </button>
+              <button class="btn-gold header-btn" onclick="app.openNewBookingForm();">
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                <span>New Booking</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- FILTERS & SEARCH -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+            <div class="form-group">
+              <input type="text" class="form-control" id="searchBookingsInput" placeholder="Search name, phone, ID, venue..." oninput="app.filterBookings();">
+            </div>
+
+            <div class="form-group">
+              <select class="form-control" id="filterEventType" onchange="app.filterBookings();">
+                <option value="">All Event Types</option>
+                <option value="Bridal Makeup">Bridal Makeup</option>
+                <option value="Muhurtham Makeup">Muhurtham Makeup</option>
+                <option value="Reception Makeup">Reception Makeup</option>
+                <option value="Engagement Makeup">Engagement Makeup</option>
+                <option value="Baby Shower Makeup">Baby Shower Makeup</option>
+                <option value="Puberty Function Makeup">Puberty Function Makeup</option>
+                <option value="Bridesmaid Makeup">Bridesmaid Makeup</option>
+                <option value="Groom Makeup">Groom Makeup</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <select class="form-control" id="filterPaymentStatus" onchange="app.filterBookings();">
+                <option value="">All Payment Statuses</option>
+                <option value="Fully Paid">Fully Paid</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <select class="form-control" id="filterConfirmationStatus" onchange="app.filterBookings();">
+                <option value="">All Confirmations</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <select class="form-control" id="sortBookingsBy" onchange="app.filterBookings();">
+                <option value="date-asc">Event Date (Upcoming First)</option>
+                <option value="date-desc">Event Date (Latest First)</option>
+                <option value="amount-desc">Total Amount (High to Low)</option>
+                <option value="name-asc">Customer Name (A-Z)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <div class="table-container">
+            <table class="data-table" id="tableAllBookings">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Event Date</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Event</th>
+                  <th>Time</th>
+                  <th>Location</th>
+                  <th>Total</th>
+                  <th>Advance</th>
+                  <th>Balance</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyAllBookings">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PAGINATION -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; flex-wrap: wrap; gap: 10px;">
+            <div style="font-size: 0.82rem; color: var(--text-muted);" id="paginationInfo">Showing 0 of 0 bookings</div>
+            <div style="display: flex; gap: 6px;">
+              <button class="action-icon-btn" onclick="app.prevPage();" id="btnPrevPage" aria-label="Previous Page"><i data-lucide="chevron-left"></i></button>
+              <button class="action-icon-btn" onclick="app.nextPage();" id="btnNextPage" aria-label="Next Page"><i data-lucide="chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 4: CALENDAR VIEW
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-calendar">
+        <div class="calendar-container">
+          <div class="calendar-nav">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <h3 class="panel-title" id="calendarMonthYearTitle">Month Year</h3>
+              <button class="btn-outline header-btn" style="padding: 5px 12px; font-size: 0.8rem;" onclick="app.calendarToday();">Today</button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="action-icon-btn" onclick="app.calendarPrev();" aria-label="Previous Month"><i data-lucide="chevron-left"></i></button>
+              <button class="action-icon-btn" onclick="app.calendarNext();" aria-label="Next Month"><i data-lucide="chevron-right"></i></button>
+            </div>
+          </div>
+
+          <!-- DAYS OF WEEK HEADER -->
+          <div class="calendar-grid" style="margin-bottom: 8px;">
+            <div class="cal-header-day">Sun</div>
+            <div class="cal-header-day">Mon</div>
+            <div class="cal-header-day">Tue</div>
+            <div class="cal-header-day">Wed</div>
+            <div class="cal-header-day">Thu</div>
+            <div class="cal-header-day">Fri</div>
+            <div class="cal-header-day">Sat</div>
+          </div>
+
+          <!-- CALENDAR CELLS -->
+          <div class="calendar-grid" id="calendarDaysGrid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 5: PAYMENTS MANAGEMENT
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-payments">
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i data-lucide="credit-card"></i> Payment Transactions</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Record multiple installment payments, advances, and settle balances.</p>
+            </div>
+            <button class="btn-gold header-btn" onclick="app.openAddPaymentModal();">
+              <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+              <span>Add Payment</span>
+            </button>
+          </div>
+
+          <!-- SEARCH & FILTERS -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;">
+            <input type="text" class="form-control" id="searchPaymentsInput" placeholder="Search customer, booking ID, payment ID..." oninput="app.renderPaymentsTable();">
+            <select class="form-control" id="filterPaymentMethodSelect" onchange="app.renderPaymentsTable();">
+              <option value="">All Payment Methods</option>
+              <option value="UPI">UPI / GPay / PhonePe</option>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer">Bank Transfer / NEFT</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Payment ID</th>
+                  <th>Booking ID</th>
+                  <th>Customer Name</th>
+                  <th>Date</th>
+                  <th>Amount Received</th>
+                  <th>Method</th>
+                  <th>Notes</th>
+                  <th>Recorded At</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyPayments">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 6: STAFF EARNINGS
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-staff-earnings">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Sangeetha Total Share</span>
+              <div class="kpi-icon-wrap gold"><i data-lucide="user-check"></i></div>
+            </div>
+            <div class="kpi-value" id="staffSangeethaTotal">₹0</div>
+            <div class="kpi-sub">Total earned across all bookings</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Rizwana Total Share</span>
+              <div class="kpi-icon-wrap"><i data-lucide="user"></i></div>
+            </div>
+            <div class="kpi-value" id="staffRizwanaTotal">₹0</div>
+            <div class="kpi-sub">Total earned across all bookings</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Combined Staff Payout</span>
+              <div class="kpi-icon-wrap"><i data-lucide="award"></i></div>
+            </div>
+            <div class="kpi-value" id="staffCombinedTotal">₹0</div>
+            <div class="kpi-sub">Sangeetha + Rizwana Total</div>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="users"></i> Booking-wise Staff Earnings Breakdown</h3>
+            <button class="btn-outline header-btn" onclick="app.exportStaffEarningsCSV();">
+              <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+              <span>Export Staff CSV</span>
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Event Date</th>
+                  <th>Customer</th>
+                  <th>Event</th>
+                  <th>Total Contract</th>
+                  <th>Sangeetha Share</th>
+                  <th>Rizwana Share</th>
+                  <th>Payment Status</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyStaffEarnings">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 7: GOD'S TITHE MANAGEMENT
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-gods-tithe">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Total God's Tithe</span>
+              <div class="kpi-icon-wrap gold"><i data-lucide="heart-handshake"></i></div>
+            </div>
+            <div class="kpi-value" style="color: var(--gold-700);" id="titheTotalOffering">₹0</div>
+            <div class="kpi-sub">1% of gross contract value</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Tithe This Month</span>
+              <div class="kpi-icon-wrap"><i data-lucide="calendar"></i></div>
+            </div>
+            <div class="kpi-value" id="titheMonthOffering">₹0</div>
+            <div class="kpi-sub">Accrued current calendar month</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Total Bookings Tithed</span>
+              <div class="kpi-icon-wrap"><i data-lucide="check-check"></i></div>
+            </div>
+            <div class="kpi-value" id="titheCount">0</div>
+            <div class="kpi-sub">Dedicated business offerings</div>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i data-lucide="scroll"></i> God's Tithe Records Statement</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Accurately recorded at 1% of total booking value (deduplicated per booking).</p>
+            </div>
+            <div class="panel-actions">
+              <button class="btn-outline header-btn" onclick="app.exportTitheCSV();">
+                <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                <span>Export Tithe CSV</span>
+              </button>
+              <button class="btn-gold header-btn" onclick="window.print();">
+                <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
+                <span>Print Statement</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Event Date</th>
+                  <th>Customer Name</th>
+                  <th>Booking Amount</th>
+                  <th>Tithe Offering (1%)</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyTitheRecords">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 8: REPORTS
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-reports">
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="bar-chart-3"></i> Financial & Operational Reports</h3>
+            <div class="panel-actions">
+              <button class="btn-outline header-btn" onclick="window.print();">
+                <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
+                <span>Print Report</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- REPORT SELECTOR -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 22px;">
+            <div class="form-group">
+              <label class="form-label">Report Type</label>
+              <select class="form-control" id="reportTypeSelect" onchange="app.generateReport();">
+                <option value="revenue-monthly">Monthly Revenue & Collection</option>
+                <option value="pending-balance">Outstanding Balances Due</option>
+                <option value="payment-methods">Payment Collection by Method</option>
+                <option value="event-distribution">Event Type Revenue Distribution</option>
+                <option value="staff-breakdown">Staff Earnings & Distribution</option>
+                <option value="tithe-annual">Annual God's Tithe Summary</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Date Filter</label>
+              <select class="form-control" id="reportDateFilter" onchange="app.generateReport();">
+                <option value="all">All Time</option>
+                <option value="this-month">This Month</option>
+                <option value="last-month">Last Month</option>
+                <option value="this-year">This Year</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="reportOutputContainer">
+            <!-- Dynamically generated reports -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 9: SETTINGS & GOOGLE SHEETS CONNECTION
+           ==================================================================== -->
+      <section class="tab-pane" id="tab-settings">
+        <div class="dashboard-panel" style="max-width: 860px; margin: 0 auto 24px;">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="database"></i> Google Sheets & Apps Script Connection</h3>
+            <span class="badge" id="settingsConnectionBadge">Not Connected</span>
+          </div>
+
+          <div style="margin-bottom: 20px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+            Connect your live Google Sheet using your deployed Google Apps Script Web App URL and Private API Key.
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Google Apps Script Web App URL <span class="req">*</span></label>
+              <input type="url" class="form-control" id="settingsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+              <span class="form-hint">Paste your deployed Web App URL (Execute as: Me, Who has access: Anyone)</span>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Private API Key <span class="req">*</span></label>
+              <input type="password" class="form-control" id="settingsApiKey" placeholder="Enter API Key from Script Properties">
+              <span class="form-hint">Stored securely only in your browser localStorage for API requests</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
+            <button class="btn-outline header-btn" onclick="app.testConnection();" id="btnTestConn">
+              <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
+              <span>Test Connection</span>
+            </button>
+            <button class="btn-gold header-btn" onclick="app.saveConnectionSettings();" id="btnSaveConn">
+              <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+              <span>Save & Connect</span>
+            </button>
+            <button class="btn-emerald header-btn" onclick="app.forceSyncFromSheets();" id="btnForceSync">
+              <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+              <span>Sync from Sheets</span>
+            </button>
+          </div>
+
+          <!-- SECURITY NOTICE CALLOUT -->
+          <div style="margin-top: 24px; padding: 14px 18px; background: #fffdf5; border-radius: var(--radius-sm); border: 1px solid rgba(212, 175, 55, 0.3); font-size: 0.82rem; color: #785816;">
+            <strong>Security & Privacy Architecture:</strong><br>
+            • Your Private API key is stored only in your local browser storage and is never committed to GitHub or exposed publicly.<br>
+            • Client-side storage protects against casual unauthorized API requests, but does not substitute for authenticated multi-tenant enterprise logins.<br>
+            • Backend Google Apps Script enforces <code>LockService</code> to prevent simultaneous write race conditions.
+          </div>
+        </div>
+
+        <!-- STUDIO PROFILE SETTINGS -->
+        <div class="dashboard-panel" style="max-width: 860px; margin: 0 auto 24px;">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="sliders"></i> Studio Business Profile</h3>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Studio / Business Name</label>
+              <input type="text" class="form-control" id="settingBusinessName" value="SANGEETHA'S MAKEUP ARTIST">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact / WhatsApp Number</label>
+              <input type="tel" class="form-control" id="settingPhone" value="+91 98765 43210">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Currency Symbol</label>
+              <input type="text" class="form-control" id="settingCurrency" value="₹" readonly>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">System Timezone</label>
+              <input type="text" class="form-control" id="settingTimezone" value="Asia/Kolkata (IST)" readonly>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Lead Artist Name</label>
+              <input type="text" class="form-control" id="settingStaff1" value="Sangeetha">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Senior Artist Name</label>
+              <input type="text" class="form-control" id="settingStaff2" value="Rizwana">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">God's Tithe Percentage (%)</label>
+              <input type="number" class="form-control" id="settingTithePct" value="1" min="1" max="100" step="0.5">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+            <button class="btn-gold header-btn" onclick="app.saveStudioProfile();">Save Profile</button>
+          </div>
+        </div>
+
+        <!-- BACKUP & EXPORT DATA -->
+        <div class="dashboard-panel" style="max-width: 860px; margin: 0 auto;">
+          <div class="panel-header">
+            <h3 class="panel-title"><i data-lucide="shield-check"></i> Data Backup & Local Cache</h3>
+          </div>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button class="btn-outline header-btn" onclick="app.downloadJsonBackup();">
+              <i data-lucide="download-cloud" style="width: 16px; height: 16px;"></i>
+              <span>Download Full Backup (JSON)</span>
+            </button>
+            <button class="btn-outline header-btn" onclick="app.resetDemoData();" style="color: #b91c1c;">
+              <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
+              <span>Reset to Sample Data</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ========================================================================
+     MODAL: VIEW BOOKING DETAILS & PRINT RECEIPT
+     ======================================================================== -->
+<div class="modal-overlay" id="bookingDetailsModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title" id="viewModalTitle">Booking Details</h3>
+      <button class="modal-close-btn" onclick="app.closeModal('bookingDetailsModal');"><i data-lucide="x"></i></button>
+    </div>
+
+    <div class="modal-body" id="viewModalContent">
+      <!-- Dynamically filled -->
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-outline header-btn" onclick="app.printCurrentBookingReceipt();">
+        <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
+        <span>Print Receipt</span>
+      </button>
+      <button class="btn-gold header-btn" id="viewModalEditBtn">
+        <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
+        <span>Edit Booking</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     MODAL: ADD PAYMENT
+     ======================================================================== -->
+<div class="modal-overlay" id="addPaymentModal">
+  <div class="modal-card" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Record Payment</h3>
+      <button class="modal-close-btn" onclick="app.closeModal('addPaymentModal');"><i data-lucide="x"></i></button>
+    </div>
+
+    <form onsubmit="app.handlePaymentSubmit(event);">
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Select Booking <span class="req">*</span></label>
+          <select class="form-control" id="payModalBookingSelect" required onchange="app.handlePayModalBookingChange(this.value);">
+            <!-- Populated -->
+          </select>
+        </div>
+
+        <div id="payModalBookingInfo" style="padding: 10px 14px; background: #faf7ef; border-radius: 8px; border: 1px solid var(--ivory-border); margin-bottom: 16px; font-size: 0.85rem;">
+          <!-- Shows pending balance -->
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Payment Amount (₹) <span class="req">*</span></label>
+          <input type="number" class="form-control" id="payModalAmount" required min="1" step="1" placeholder="Enter amount received">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Payment Date <span class="req">*</span></label>
+          <input type="date" class="form-control" id="payModalDate" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Payment Method <span class="req">*</span></label>
+          <select class="form-control" id="payModalMethod" required>
+            <option value="UPI">UPI / GPay / PhonePe</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank Transfer">Bank Transfer / NEFT</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notes / Reference No.</label>
+          <input type="text" class="form-control" id="payModalNotes" placeholder="e.g. UPI Ref: 312384912903, Final settlement">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-outline header-btn" onclick="app.closeModal('addPaymentModal');">Cancel</button>
+        <button type="submit" class="btn-gold header-btn" id="savePaymentBtn">
+          <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+          <span>Save Payment</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================================================
+     PRINT RECEIPT WRAPPER
+     ======================================================================== -->
+<section id="print-receipt-section">
+  <div class="receipt-container" id="printableReceiptContent">
+    <!-- Populated for printing -->
+  </div>
+</section>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ==========================================================================
+     FRONTEND JAVASCRIPT APPLICATION LOGIC
+     ========================================================================== -->
+<script>
+/**
+ * ============================================================================
+ * SANGEETHA'S MAKEUP ARTIST – FRONTEND ENGINE
+ * Version: 2.0 Production Ready
+ * 
+ * Strict Date & Time Preservation:
+ *  - Dates are treated as ISO 'YYYY-MM-DD' strings.
+ *  - Times are formatted cleanly without Date conversions or timezone shifts.
+ * ============================================================================
+ */
+
+// PURE STRING DATE & TIME HELPERS (NEVER CAUSE TIMEZONE SHIFTS)
+const DateUtils = {
+  // Returns today's date formatted as 'YYYY-MM-DD' in local time
+  todayIso() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  },
+
+  // Normalizes any input date to strict 'YYYY-MM-DD'
+  toIsoDate(val) {
+    if (!val) return '';
+    const str = String(val).trim().split('T')[0];
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+    const match = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
+    if (match) {
+      const [, d, m, y] = match;
+      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+    return str;
+  },
+
+  // Displays date strictly as 'DD-MM-YYYY' without new Date() offset distortion
+  formatDisplay(isoDateStr) {
+    if (!isoDateStr) return '-';
+    const clean = String(isoDateStr).trim().split('T')[0];
+    const parts = clean.split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+      const [y, m, d] = parts;
+      return `${d.padStart(2, '0')}-${m.padStart(2, '0')}-${y}`;
+    }
+    return clean;
+  },
+
+  // Displays time in 12-hour AM/PM format (e.g. 10:30 -> 10:30 AM, 18:45 -> 06:45 PM)
+  formatTime12H(timeStr) {
+    if (!timeStr) return '-';
+    const str = String(timeStr).trim();
+    const match = str.match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return str;
+    let h = parseInt(match[1], 10);
+    const m = match[2];
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+  }
+};
+
+// INITIAL SEED DATA FOR SEAMLESS DEMO / LOCAL MODE
+const SEED_BOOKINGS = [
+  {
+    BookingID: 'BK-20261122-001',
+    EventDate: '2026-11-22',
+    Customer: 'Priyadharshini M.',
+    Phone: '9840123456',
+    Event: 'Muhurtham Makeup',
+    Time: '06:00',
+    Location: 'Sri Krishna Kalyana Mandapam, Chennai',
+    Notes: 'Muhurtham bridal styling with traditional Kanjeevaram draping and floral veni.',
+    Total: 25000,
+    Advance: 15000,
+    Balance: 10000,
+    Sangeetha: 16000,
+    Rizwana: 6000,
+    Tithe: 250,
+    PaymentStatus: 'Partially Paid',
+    Confirmation: 'Confirmed',
+    Created: '2026-11-01T10:00:00',
+    Updated: '2026-11-01T10:00:00'
+  },
+  {
+    BookingID: 'BK-20261125-002',
+    EventDate: '2026-11-25',
+    Customer: 'Ananya Ramanathan',
+    Phone: '9884567890',
+    Event: 'Reception Makeup',
+    Time: '18:45',
+    Location: 'Leela Palace Grand Ballroom, MRC Nagar',
+    Notes: 'Glamour cocktail reception with HD airbrush finish and soft waves styling.',
+    Total: 22000,
+    Advance: 22000,
+    Balance: 0,
+    Sangeetha: 14000,
+    Rizwana: 5000,
+    Tithe: 220,
+    PaymentStatus: 'Fully Paid',
+    Confirmation: 'Confirmed',
+    Created: '2026-11-03T11:30:00',
+    Updated: '2026-11-10T14:20:00'
+  },
+  {
+    BookingID: 'BK-20261205-003',
+    EventDate: '2026-12-05',
+    Customer: 'Divya & Karthik',
+    Phone: '9790112233',
+    Event: 'Engagement Makeup',
+    Time: '10:30',
+    Location: 'Mayor Ramanathan Chettiar Hall, RA Puram',
+    Notes: 'Subtle pastel makeup for ring ceremony.',
+    Total: 15000,
+    Advance: 5000,
+    Balance: 10000,
+    Sangeetha: 9000,
+    Rizwana: 4000,
+    Tithe: 150,
+    PaymentStatus: 'Partially Paid',
+    Confirmation: 'Confirmed',
+    Created: '2026-11-05T09:15:00',
+    Updated: '2026-11-05T09:15:00'
+  },
+  {
+    BookingID: 'BK-20261214-004',
+    EventDate: '2026-12-14',
+    Customer: 'Meera Krishnan',
+    Phone: '9444123987',
+    Event: 'Baby Shower Makeup',
+    Time: '09:00',
+    Location: 'Hyatt Regency, Anna Salai',
+    Notes: 'Traditional Seemantham makeup with gold jewellery setting.',
+    Total: 12000,
+    Advance: 0,
+    Balance: 12000,
+    Sangeetha: 8000,
+    Rizwana: 3000,
+    Tithe: 120,
+    PaymentStatus: 'Pending',
+    Confirmation: 'Pending',
+    Created: '2026-11-12T16:00:00',
+    Updated: '2026-11-12T16:00:00'
+  }
+];
+
+const SEED_PAYMENTS = [
+  {
+    PaymentID: 'PM-20261101-001',
+    BookingID: 'BK-20261122-001',
+    Date: '2026-11-01',
+    Amount: 15000,
+    Method: 'UPI',
+    Notes: 'Booking advance via GPay',
+    Created: '2026-11-01T10:00:00'
+  },
+  {
+    PaymentID: 'PM-20261103-002',
+    BookingID: 'BK-20261125-002',
+    Date: '2026-11-03',
+    Amount: 10000,
+    Method: 'UPI',
+    Notes: 'Initial booking token',
+    Created: '2026-11-03T11:30:00'
+  },
+  {
+    PaymentID: 'PM-20261110-003',
+    BookingID: 'BK-20261125-002',
+    Date: '2026-11-10',
+    Amount: 12000,
+    Method: 'Bank Transfer',
+    Notes: 'Full balance settled',
+    Created: '2026-11-10T14:20:00'
+  },
+  {
+    PaymentID: 'PM-20261105-004',
+    BookingID: 'BK-20261205-003',
+    Date: '2026-11-05',
+    Amount: 5000,
+    Method: 'Cash',
+    Notes: 'Studio advance cash receipt',
+    Created: '2026-11-05T09:15:00'
+  }
+];
+
+// APPLICATION CONTROLLER
+class SangeethasApp {
+  constructor() {
+    this.bookings = [];
+    this.payments = [];
+    this.titheRecords = [];
+    this.settings = {
+      scriptUrl: '',
+      apiKey: '',
+      businessName: "SANGEETHA'S MAKEUP ARTIST",
+      phone: "+91 98765 43210",
+      tithePercent: 1,
+      staff1: "Sangeetha",
+      staff2: "Rizwana"
+    };
+
+    this.activeTab = 'dashboard';
+    this.dashboardFilter = 'all';
+    this.currentPage = 1;
+    this.itemsPerPage = 10;
+    this.currentViewBooking = null;
+
+    // Chart instances
+    this.charts = {};
+  }
+
+  // Initialization
+  init() {
+    this.loadSettings();
+    this.loadLocalData();
+    this.bindEvents();
+    this.updateHeaderDate();
+    this.renderAll();
+
+    // If script URL and Key are saved, attempt sync
+    if (this.settings.scriptUrl && this.settings.apiKey) {
+      this.syncFromSheets(true);
+    } else {
+      this.updateSyncBadge('demo', 'Demo / Local Mode', 'Click to connect Sheets');
+    }
+
+    lucide.createIcons();
+  }
+
+  // Bind UI Events
+  bindEvents() {
+    // Navigation tabs
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tab = item.getAttribute('data-tab');
+        this.showTab(tab);
+      });
+    });
+
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('appSidebar');
+    if (mobileBtn && sidebar) {
+      mobileBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+      });
+    }
+
+    // Set today's date in form default
+    const dateInput = document.getElementById('formEventDate');
+    if (dateInput) dateInput.value = DateUtils.todayIso();
+  }
+
+  // Load Settings from LocalStorage
+  loadSettings() {
+    try {
+      const saved = localStorage.getItem('SMA_SETTINGS');
+      if (saved) {
+        this.settings = Object.assign(this.settings, JSON.parse(saved));
+      }
+      // Populate settings form
+      document.getElementById('settingsScriptUrl').value = this.settings.scriptUrl || '';
+      document.getElementById('settingsApiKey').value = this.settings.apiKey || '';
+      document.getElementById('settingBusinessName').value = this.settings.businessName || "SANGEETHA'S MAKEUP ARTIST";
+      document.getElementById('settingPhone').value = this.settings.phone || "+91 98765 43210";
+      document.getElementById('settingStaff1').value = this.settings.staff1 || "Sangeetha";
+      document.getElementById('settingStaff2').value = this.settings.staff2 || "Rizwana";
+      document.getElementById('settingTithePct').value = this.settings.tithePercent || 1;
+    } catch (e) {
+      console.error('Error loading settings', e);
+    }
+  }
+
+  // Save Settings to LocalStorage
+  saveSettings() {
+    localStorage.setItem('SMA_SETTINGS', JSON.stringify(this.settings));
+  }
+
+  // Load Database Data (LocalStorage or Seed)
+  loadLocalData() {
+    try {
+      const bks = localStorage.getItem('SMA_BOOKINGS');
+      const pms = localStorage.getItem('SMA_PAYMENTS');
+      if (bks) {
+        this.bookings = JSON.parse(bks);
+      } else {
+        this.bookings = JSON.parse(JSON.stringify(SEED_BOOKINGS));
+        this.saveBookings();
+      }
+
+      if (pms) {
+        this.payments = JSON.parse(pms);
+      } else {
+        this.payments = JSON.parse(JSON.stringify(SEED_PAYMENTS));
+        this.savePayments();
+      }
+
+      this.recalcAllBalances();
+    } catch (e) {
+      console.error('Data load error', e);
+      this.bookings = JSON.parse(JSON.stringify(SEED_BOOKINGS));
+      this.payments = JSON.parse(JSON.stringify(SEED_PAYMENTS));
+    }
+  }
+
+  saveBookings() {
+    localStorage.setItem('SMA_BOOKINGS', JSON.stringify(this.bookings));
+  }
+
+  savePayments() {
+    localStorage.setItem('SMA_PAYMENTS', JSON.stringify(this.payments));
+  }
+
+  // Recalculates all balances, payments, and tithes consistently
+  recalcAllBalances() {
+    this.bookings.forEach(b => {
+      const bPayments = this.payments.filter(p => String(p.BookingID).trim() === String(b.BookingID).trim());
+      const totalPaid = bPayments.reduce((sum, p) => sum + (parseFloat(p.Amount) || 0), 0);
+      const totalAmt = parseFloat(b.Total) || 0;
+      
+      b.Advance = totalPaid;
+      b.Balance = Math.max(0, totalAmt - totalPaid);
+      b.Tithe = Math.round(totalAmt * (parseFloat(this.settings.tithePercent) / 100) * 100) / 100;
+
+      if (totalPaid === 0) {
+        b.PaymentStatus = 'Pending';
+      } else if (totalPaid >= totalAmt && totalAmt > 0) {
+        b.PaymentStatus = 'Fully Paid';
+      } else {
+        b.PaymentStatus = 'Partially Paid';
+      }
+    });
+
+    // Sync Tithe Records
+    this.titheRecords = this.bookings.map(b => ({
+      BookingID: b.BookingID,
+      EventDate: b.EventDate,
+      Customer: b.Customer,
+      BookingAmount: b.Total,
+      Tithe: b.Tithe
+    }));
+
+    this.saveBookings();
+  }
+
+  // Switch Active Tab
+  showTab(tabId) {
+    this.activeTab = tabId;
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+    const targetPane = document.getElementById(`tab-${tabId}`);
+    const targetNav = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+    if (targetPane) targetPane.classList.add('active');
+    if (targetNav) targetNav.classList.add('active');
+
+    // Update Headings
+    const headingEl = document.getElementById('pageMainHeading');
+    const subEl = document.getElementById('pageMainSub');
+    const titles = {
+      'dashboard': ['Executive Dashboard', 'Real-time studio KPIs and business metrics'],
+      'new-booking': ['Booking Manager', 'Create or edit client appointments'],
+      'all-bookings': ['All Bookings', 'Complete client schedule, payments & search'],
+      'calendar': ['Studio Calendar', 'Monthly event schedule & timeline'],
+      'payments': ['Payments & Collections', 'Multi-payment history and balances'],
+      'staff-earnings': ['Staff Earnings', 'Sangeetha & Rizwana earnings distribution'],
+      'gods-tithe': ["God's Tithe (1%)", 'Dedicated 1% business offering statement'],
+      'reports': ['Financial Reports', 'Revenue, bookings, and distribution analysis'],
+      'settings': ['System Settings', 'Google Sheets configuration and studio profile']
+    };
+
+    if (titles[tabId] && headingEl && subEl) {
+      headingEl.textContent = titles[tabId][0];
+      subEl.textContent = titles[tabId][1];
+    }
+
+    // Close mobile drawer on navigation
+    const sidebar = document.getElementById('appSidebar');
+    if (sidebar) sidebar.classList.remove('open');
+
+    // Tab specific refreshes
+    if (tabId === 'calendar') this.renderCalendar();
+    if (tabId === 'dashboard') this.renderDashboard();
+    if (tabId === 'all-bookings') this.filterBookings();
+    if (tabId === 'payments') this.renderPaymentsTable();
+    if (tabId === 'staff-earnings') this.renderStaffEarnings();
+    if (tabId === 'gods-tithe') this.renderTitheTable();
+    if (tabId === 'reports') this.generateReport();
+
+    lucide.createIcons();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Render All Views
+  renderAll() {
+    this.recalcAllBalances();
+    this.renderDashboard();
+    this.filterBookings();
+    this.renderPaymentsTable();
+    this.renderStaffEarnings();
+    this.renderTitheTable();
+    this.renderCalendar();
+    this.updateSidebarCounters();
+    lucide.createIcons();
+  }
+
+  updateHeaderDate() {
+    const el = document.getElementById('headerLiveDate');
+    if (el) el.textContent = DateUtils.formatDisplay(DateUtils.todayIso());
+  }
+
+  updateSidebarCounters() {
+    const countEl = document.getElementById('sidebarBookingCount');
+    if (countEl) countEl.textContent = this.bookings.length;
+  }
+
+  updateSyncBadge(status, title, sub) {
+    const ind = document.getElementById('sidebarSyncIndicator');
+    const tEl = document.getElementById('sidebarSyncTitle');
+    const sEl = document.getElementById('sidebarSyncSubtitle');
+    const bEl = document.getElementById('settingsConnectionBadge');
+
+    if (ind) {
+      ind.className = `sync-indicator ${status}`;
+    }
+    if (tEl) tEl.textContent = title;
+    if (sEl) sEl.textContent = sub;
+    if (bEl) {
+      bEl.textContent = title;
+      bEl.className = `badge ${status === 'connected' ? 'badge-paid' : 'badge-partial'}`;
+    }
+  }
+
+  // ==========================================================================
+  // DASHBOARD CALCULATIONS & CHARTS
+  // ==========================================================================
+  setDashboardFilter(range, btn) {
+    this.dashboardFilter = range;
+    document.querySelectorAll('#tab-dashboard .header-btn').forEach(b => b.classList.remove('btn-gold'));
+    if (btn) btn.classList.add('btn-gold');
+
+    const labels = {
+      'all': 'Showing all-time records',
+      'today': "Showing today's events",
+      'week': 'Showing this week (next 7 days)',
+      'month': 'Showing this calendar month',
+      'year': 'Showing this year'
+    };
+    const lbl = document.getElementById('dashboardFilterLabel');
+    if (lbl) lbl.textContent = labels[range] || '';
+
+    this.renderDashboard();
+  }
+
+  getFilteredBookingsForDashboard() {
+    const today = DateUtils.todayIso();
+    const curYear = today.substring(0, 4);
+    const curMonth = today.substring(0, 7);
+
+    if (this.dashboardFilter === 'today') {
+      return this.bookings.filter(b => b.EventDate === today);
+    }
+    if (this.dashboardFilter === 'month') {
+      return this.bookings.filter(b => b.EventDate && b.EventDate.startsWith(curMonth));
+    }
+    if (this.dashboardFilter === 'year') {
+      return this.bookings.filter(b => b.EventDate && b.EventDate.startsWith(curYear));
+    }
+    if (this.dashboardFilter === 'week') {
+      const todayNum = new Date().getTime();
+      return this.bookings.filter(b => {
+        if (!b.EventDate) return false;
+        const bParts = b.EventDate.split('-');
+        const bTime = new Date(bParts[0], bParts[1] - 1, bParts[2]).getTime();
+        const diffDays = (bTime - todayNum) / (1000 * 3600 * 24);
+        return diffDays >= -1 && diffDays <= 7;
+      });
+    }
+    return this.bookings;
+  }
+
+  renderDashboard() {
+    const list = this.getFilteredBookingsForDashboard();
+
+    const totalBookings = list.length;
+    const confirmedCount = list.filter(b => b.Confirmation === 'Confirmed').length;
+    const totalRev = list.reduce((sum, b) => sum + (parseFloat(b.Total) || 0), 0);
+    const totalAdv = list.reduce((sum, b) => sum + (parseFloat(b.Advance) || 0), 0);
+    const totalBal = list.reduce((sum, b) => sum + (parseFloat(b.Balance) || 0), 0);
+    const sangeethaTotal = list.reduce((sum, b) => sum + (parseFloat(b.Sangeetha) || 0), 0);
+    const rizwanaTotal = list.reduce((sum, b) => sum + (parseFloat(b.Rizwana) || 0), 0);
+    const titheTotal = list.reduce((sum, b) => sum + (parseFloat(b.Tithe) || 0), 0);
+
+    // KPI values
+    document.getElementById('kpiTotalBookings').textContent = totalBookings;
+    document.getElementById('kpiConfirmedBookings').textContent = `${confirmedCount} Confirmed`;
+    document.getElementById('kpiTotalRevenue').textContent = `₹${totalRev.toLocaleString('en-IN')}`;
+    document.getElementById('kpiTotalAdvance').textContent = `₹${totalAdv.toLocaleString('en-IN')}`;
+    document.getElementById('kpiTotalBalance').textContent = `₹${totalBal.toLocaleString('en-IN')}`;
+    document.getElementById('kpiSangeetha').textContent = `₹${sangeethaTotal.toLocaleString('en-IN')}`;
+    document.getElementById('kpiRizwana').textContent = `₹${rizwanaTotal.toLocaleString('en-IN')}`;
+    document.getElementById('kpiGodsTithe').textContent = `₹${titheTotal.toLocaleString('en-IN')}`;
+
+    // Render Recent Table
+    this.renderRecentDashboardTable();
+
+    // Render Charts
+    this.renderDashboardCharts();
+  }
+
+  renderRecentDashboardTable() {
+    const tbody = document.getElementById('tbodyDashboardRecent');
+    if (!tbody) return;
+
+    // Sort upcoming / latest
+    const sorted = [...this.bookings].sort((a, b) => (a.EventDate || '').localeCompare(b.EventDate || '')).slice(0, 6);
+
+    if (sorted.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 24px;">No booking records available.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = sorted.map(b => {
+      const pClass = b.PaymentStatus === 'Fully Paid' ? 'badge-paid' : (b.PaymentStatus === 'Partially Paid' ? 'badge-partial' : 'badge-pending');
+      return `
+        <tr>
+          <td><strong>${DateUtils.formatDisplay(b.EventDate)}</strong></td>
+          <td><strong>${this.escapeHtml(b.Customer)}</strong></td>
+          <td>${this.escapeHtml(b.Phone || '-')}</td>
+          <td><span style="color: var(--emerald-850); font-weight: 600;">${this.escapeHtml(b.Event)}</span></td>
+          <td>${DateUtils.formatTime12H(b.Time)}</td>
+          <td>₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</td>
+          <td style="color: #0b7a47; font-weight: 600;">₹${(parseFloat(b.Advance) || 0).toLocaleString('en-IN')}</td>
+          <td style="color: #b91c1c; font-weight: 600;">₹${(parseFloat(b.Balance) || 0).toLocaleString('en-IN')}</td>
+          <td><span class="badge ${pClass}">${b.PaymentStatus}</span></td>
+          <td>
+            <div class="action-btn-group">
+              <button class="action-icon-btn" title="View Details" onclick="app.viewBookingDetails('${b.BookingID}');"><i data-lucide="eye"></i></button>
+              <button class="action-icon-btn" title="Edit" onclick="app.editBooking('${b.BookingID}');"><i data-lucide="edit"></i></button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  renderDashboardCharts() {
+    // 1. Monthly Revenue Chart
+    const monthlyRevData = {};
+    const monthlyCountData = {};
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const curYear = new Date().getFullYear();
+
+    months.forEach((m, idx) => {
+      const key = `${curYear}-${String(idx + 1).padStart(2, '0')}`;
+      monthlyRevData[key] = 0;
+      monthlyCountData[key] = 0;
+    });
+
+    this.bookings.forEach(b => {
+      if (b.EventDate && b.EventDate.startsWith(String(curYear))) {
+        const key = b.EventDate.substring(0, 7);
+        if (monthlyRevData[key] !== undefined) {
+          monthlyRevData[key] += (parseFloat(b.Total) || 0);
+          monthlyCountData[key] += 1;
+        }
+      }
+    });
+
+    const labels = Object.keys(monthlyRevData).map(k => {
+      const mIdx = parseInt(k.split('-')[1], 10) - 1;
+      return months[mIdx];
+    });
+    const revValues = Object.values(monthlyRevData);
+    const countValues = Object.values(monthlyCountData);
+
+    if (this.charts.revenue) this.charts.revenue.destroy();
+    const ctxRev = document.getElementById('chartMonthlyRevenue');
+    if (ctxRev) {
+      this.charts.revenue = new Chart(ctxRev, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `Revenue (${curYear}) ₹`,
+            data: revValues,
+            backgroundColor: '#0f4033',
+            hoverBackgroundColor: '#d4af37',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: (val) => '₹' + (val >= 1000 ? (val/1000) + 'k' : val) }
+            }
+          }
+        }
+      });
+    }
+
+    // 2. Payment Status Doughnut
+    let fullyPaid = 0, partiallyPaid = 0, pending = 0;
+    this.bookings.forEach(b => {
+      if (b.PaymentStatus === 'Fully Paid') fullyPaid++;
+      else if (b.PaymentStatus === 'Partially Paid') partiallyPaid++;
+      else pending++;
+    });
+
+    if (this.charts.paymentStatus) this.charts.paymentStatus.destroy();
+    const ctxPay = document.getElementById('chartPaymentStatus');
+    if (ctxPay) {
+      this.charts.paymentStatus = new Chart(ctxPay, {
+        type: 'doughnut',
+        data: {
+          labels: ['Fully Paid', 'Partially Paid', 'Pending'],
+          datasets: [{
+            data: [fullyPaid, partiallyPaid, pending],
+            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '65%'
+        }
+      });
+    }
+
+    // 3. Monthly Bookings Bar
+    if (this.charts.bookingsCount) this.charts.bookingsCount.destroy();
+    const ctxBks = document.getElementById('chartMonthlyBookings');
+    if (ctxBks) {
+      this.charts.bookingsCount = new Chart(ctxBks, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Bookings Count',
+            data: countValues,
+            borderColor: '#d4af37',
+            backgroundColor: 'rgba(212, 175, 55, 0.15)',
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#0f4033',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+      });
+    }
+
+    // 4. Event Types Distribution
+    const typeCounts = {};
+    this.bookings.forEach(b => {
+      const t = b.Event || 'Other';
+      typeCounts[t] = (typeCounts[t] || 0) + 1;
+    });
+
+    if (this.charts.eventTypes) this.charts.eventTypes.destroy();
+    const ctxTypes = document.getElementById('chartEventTypes');
+    if (ctxTypes) {
+      this.charts.eventTypes = new Chart(ctxTypes, {
+        type: 'polarArea',
+        data: {
+          labels: Object.keys(typeCounts),
+          datasets: [{
+            data: Object.values(typeCounts),
+            backgroundColor: [
+              'rgba(15, 64, 51, 0.8)',
+              'rgba(212, 175, 55, 0.8)',
+              'rgba(16, 185, 129, 0.8)',
+              'rgba(245, 158, 11, 0.8)',
+              'rgba(99, 102, 241, 0.8)',
+              'rgba(236, 72, 153, 0.8)'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { boxWidth: 10 } } }
+        }
+      });
+    }
+
+    // 5. Staff Earnings Comparison
+    const sangTotal = this.bookings.reduce((sum, b) => sum + (parseFloat(b.Sangeetha) || 0), 0);
+    const rizTotal = this.bookings.reduce((sum, b) => sum + (parseFloat(b.Rizwana) || 0), 0);
+
+    if (this.charts.staffComparison) this.charts.staffComparison.destroy();
+    const ctxStaff = document.getElementById('chartStaffComparison');
+    if (ctxStaff) {
+      this.charts.staffComparison = new Chart(ctxStaff, {
+        type: 'bar',
+        data: {
+          labels: [this.settings.staff1 || 'Sangeetha', this.settings.staff2 || 'Rizwana'],
+          datasets: [{
+            data: [sangTotal, rizTotal],
+            backgroundColor: ['#0f4033', '#d4af37'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: (val) => '₹' + (val >= 1000 ? (val/1000) + 'k' : val) }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // ==========================================================================
+  // BOOKING FORM LOGIC (ADD / EDIT)
+  // ==========================================================================
+  openNewBookingForm() {
+    this.resetBookingForm();
+    this.showTab('new-booking');
+  }
+
+  resetBookingForm() {
+    document.getElementById('formBookingID').value = '';
+    document.getElementById('formCustomer').value = '';
+    document.getElementById('formPhone').value = '';
+    document.getElementById('formEventType').value = 'Bridal Makeup';
+    document.getElementById('formCustomEventTypeGroup').style.display = 'none';
+    document.getElementById('formCustomEventType').value = '';
+    document.getElementById('formEventDate').value = DateUtils.todayIso();
+    document.getElementById('formEventTime').value = '06:00';
+    document.getElementById('formLocation').value = '';
+    document.getElementById('formTotalAmount').value = '';
+    document.getElementById('formInitialAdvance').value = '';
+    document.getElementById('initialAdvanceGroup').style.display = 'flex';
+    document.getElementById('paymentMethodGroup').style.display = 'flex';
+    document.getElementById('formPaymentMethod').value = 'UPI';
+    document.getElementById('formSangeetha').value = '';
+    document.getElementById('formRizwana').value = '';
+    document.getElementById('formConfirmation').value = 'Confirmed';
+    document.getElementById('formNotes').value = '';
+
+    document.getElementById('bookingFormHeading').innerHTML = `<i data-lucide="calendar-plus"></i> Create New Booking`;
+    document.getElementById('saveBookingBtnText').textContent = 'Confirm & Save Booking';
+
+    this.recalcFormPreview();
+    lucide.createIcons();
+  }
+
+  handleEventTypeChange(val) {
+    const customGroup = document.getElementById('formCustomEventTypeGroup');
+    if (val === 'Other') {
+      customGroup.style.display = 'flex';
+      document.getElementById('formCustomEventType').required = true;
+    } else {
+      customGroup.style.display = 'none';
+      document.getElementById('formCustomEventType').required = false;
+    }
+  }
+
+  recalcFormPreview() {
+    const total = parseFloat(document.getElementById('formTotalAmount').value) || 0;
+    const initialAdv = parseFloat(document.getElementById('formInitialAdvance').value) || 0;
+    const sang = parseFloat(document.getElementById('formSangeetha').value) || 0;
+    const riz = parseFloat(document.getElementById('formRizwana').value) || 0;
+
+    // Tithe calculation: Exactly 1% of Full Total Booking Amount
+    const tithePct = parseFloat(this.settings.tithePercent) || 1;
+    const titheAmt = Math.round(total * (tithePct / 100) * 100) / 100;
+    const balance = Math.max(0, total - initialAdv);
+
+    document.getElementById('previewTithe').textContent = `₹${titheAmt.toLocaleString('en-IN')}`;
+    document.getElementById('previewPaid').textContent = `₹${initialAdv.toLocaleString('en-IN')}`;
+    document.getElementById('previewBalance').textContent = `₹${balance.toLocaleString('en-IN')}`;
+    document.getElementById('previewStaff').textContent = `₹${(sang + riz).toLocaleString('en-IN')}`;
+  }
+
+  async handleBookingSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('saveBookingSubmitBtn');
+    btn.disabled = true;
+
+    try {
+      const bookingId = document.getElementById('formBookingID').value.trim();
+      const customer = document.getElementById('formCustomer').value.trim();
+      const phone = document.getElementById('formPhone').value.trim();
+      let eventType = document.getElementById('formEventType').value;
+      if (eventType === 'Other') {
+        eventType = document.getElementById('formCustomEventType').value.trim() || 'Other';
+      }
+
+      // CRITICAL DATE & TIME SANITIZATION
+      const eventDate = DateUtils.toIsoDate(document.getElementById('formEventDate').value);
+      const eventTime = document.getElementById('formEventTime').value;
+      const location = document.getElementById('formLocation').value.trim();
+      const total = Math.max(0, parseFloat(document.getElementById('formTotalAmount').value) || 0);
+      const initialAdvance = Math.max(0, parseFloat(document.getElementById('formInitialAdvance').value) || 0);
+      const paymentMethod = document.getElementById('formPaymentMethod').value;
+      const sangeetha = Math.max(0, parseFloat(document.getElementById('formSangeetha').value) || 0);
+      const rizwana = Math.max(0, parseFloat(document.getElementById('formRizwana').value) || 0);
+      const confirmation = document.getElementById('formConfirmation').value;
+      const notes = document.getElementById('formNotes').value.trim();
+
+      if (initialAdvance > total && total > 0) {
+        this.showToast('Initial advance cannot exceed total booking amount', 'warning');
+        btn.disabled = false;
+        return;
+      }
+
+      const isEdit = !!bookingId;
+      const newOrExistingId = isEdit ? bookingId : `BK-${eventDate.replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+      const nowIso = new Date().toISOString();
+
+      const bookingObj = {
+        BookingID: newOrExistingId,
+        EventDate: eventDate,
+        Customer: customer,
+        Phone: phone,
+        Event: eventType,
+        Time: eventTime,
+        Location: location,
+        Notes: notes,
+        Total: total,
+        InitialAdvance: initialAdvance,
+        PaymentMethod: paymentMethod,
+        PaymentNotes: 'Initial Advance',
+        Sangeetha: sangeetha,
+        Rizwana: rizwana,
+        Tithe: Math.round(total * (parseFloat(this.settings.tithePercent) / 100) * 100) / 100,
+        Confirmation: confirmation,
+        Created: isEdit ? (this.bookings.find(b => b.BookingID === bookingId)?.Created || nowIso) : nowIso,
+        Updated: nowIso
+      };
+
+      // 1. If connected to Google Apps Script, perform live API call
+      if (this.settings.scriptUrl && this.settings.apiKey) {
+        this.showToast('Saving booking to Google Sheets...', 'warning');
+        const apiRes = await this.apiPost('saveBooking', { booking: bookingObj });
+        if (apiRes.ok && apiRes.data && apiRes.data.booking) {
+          this.applySavedBookingLocally(apiRes.data.booking, apiRes.data.payments);
+          this.showToast(`Booking ${isEdit ? 'updated' : 'created'} successfully in Google Sheets!`, 'success');
+        } else {
+          throw new Error(apiRes.error || 'Failed to save to Google Sheets');
+        }
+      } else {
+        // Local mode fallback
+        this.applySavedBookingLocally(bookingObj, null, initialAdvance, paymentMethod);
+        this.showToast(`Booking ${isEdit ? 'updated' : 'created'} locally!`, 'success');
+      }
+
+      this.renderAll();
+      this.showTab('all-bookings');
+    } catch (err) {
+      console.error(err);
+      this.showToast(`Error: ${err.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  applySavedBookingLocally(bookingObj, paymentsFromServer, initialAdv = 0, pMethod = 'UPI') {
+    const existingIndex = this.bookings.findIndex(b => b.BookingID === bookingObj.BookingID);
+    if (existingIndex >= 0) {
+      this.bookings[existingIndex] = bookingObj;
+    } else {
+      this.bookings.unshift(bookingObj);
+
+      // Record local advance payment if provided and not yet created
+      if (initialAdv > 0 && (!paymentsFromServer || paymentsFromServer.length === 0)) {
+        const pId = `PM-${DateUtils.todayIso().replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+        this.payments.unshift({
+          PaymentID: pId,
+          BookingID: bookingObj.BookingID,
+          Date: bookingObj.EventDate || DateUtils.todayIso(),
+          Amount: initialAdv,
+          Method: pMethod,
+          Notes: 'Initial Advance',
+          Created: new Date().toISOString()
+        });
+        this.savePayments();
+      }
+    }
+
+    if (paymentsFromServer && Array.isArray(paymentsFromServer)) {
+      // Merge server payments
+      paymentsFromServer.forEach(sp => {
+        const pIdx = this.payments.findIndex(p => p.PaymentID === sp.PaymentID);
+        if (pIdx >= 0) this.payments[pIdx] = sp;
+        else this.payments.unshift(sp);
+      });
+      this.savePayments();
+    }
+
+    this.recalcAllBalances();
+  }
+
+  editBooking(bookingId) {
+    const b = this.bookings.find(item => item.BookingID === bookingId);
+    if (!b) return;
+
+    this.closeModal('bookingDetailsModal');
+    this.showTab('new-booking');
+
+    document.getElementById('formBookingID').value = b.BookingID;
+    document.getElementById('formCustomer').value = b.Customer || '';
+    document.getElementById('formPhone').value = b.Phone || '';
+    
+    const eventSelect = document.getElementById('formEventType');
+    const customEventGroup = document.getElementById('formCustomEventTypeGroup');
+    const customEventInput = document.getElementById('formCustomEventType');
+
+    // Check if event matches standard list
+    const standardEvents = ['Bridal Makeup', 'Muhurtham Makeup', 'Reception Makeup', 'Engagement Makeup', 'Baby Shower Makeup', 'Puberty Function Makeup', 'Bridesmaid Makeup', 'Groom Makeup'];
+    if (standardEvents.includes(b.Event)) {
+      eventSelect.value = b.Event;
+      customEventGroup.style.display = 'none';
+    } else {
+      eventSelect.value = 'Other';
+      customEventGroup.style.display = 'flex';
+      customEventInput.value = b.Event || '';
+    }
+
+    document.getElementById('formEventDate').value = b.EventDate || '';
+    document.getElementById('formEventTime').value = b.Time || '06:00';
+    document.getElementById('formLocation').value = b.Location || '';
+    document.getElementById('formTotalAmount').value = b.Total || 0;
+    
+    // Hide initial advance input during edit to prevent duplicate payments; payments are managed via Payments tab
+    document.getElementById('initialAdvanceGroup').style.display = 'none';
+    document.getElementById('paymentMethodGroup').style.display = 'none';
+
+    document.getElementById('formSangeetha').value = b.Sangeetha || 0;
+    document.getElementById('formRizwana').value = b.Rizwana || 0;
+    document.getElementById('formConfirmation').value = b.Confirmation || 'Confirmed';
+    document.getElementById('formNotes').value = b.Notes || '';
+
+    document.getElementById('bookingFormHeading').innerHTML = `<i data-lucide="edit"></i> Edit Booking – ${b.BookingID}`;
+    document.getElementById('saveBookingBtnText').textContent = 'Update Booking Changes';
+
+    this.recalcFormPreview();
+    lucide.createIcons();
+  }
+
+  async deleteBooking(bookingId) {
+    const b = this.bookings.find(item => item.BookingID === bookingId);
+    const cName = b ? b.Customer : bookingId;
+
+    if (!confirm(`Are you sure you want to delete the booking for "${cName}" (${bookingId})?\nAll recorded payments and tithes for this booking will also be removed permanently.`)) {
+      return;
+    }
+
+    try {
+      if (this.settings.scriptUrl && this.settings.apiKey) {
+        this.showToast('Deleting from Google Sheets...', 'warning');
+        const res = await this.apiPost('deleteBooking', { bookingId: bookingId });
+        if (!res.ok) throw new Error(res.error || 'Failed to delete on Google Sheets');
+      }
+
+      // Remove locally
+      this.bookings = this.bookings.filter(item => item.BookingID !== bookingId);
+      this.payments = this.payments.filter(item => item.BookingID !== bookingId);
+      this.saveBookings();
+      this.savePayments();
+
+      this.closeModal('bookingDetailsModal');
+      this.renderAll();
+      this.showToast(`Booking ${bookingId} deleted successfully.`, 'success');
+    } catch (err) {
+      console.error(err);
+      this.showToast(`Delete Error: ${err.message}`, 'error');
+    }
+  }
+
+  // ==========================================================================
+  // ALL BOOKINGS TABLE & PAGINATION
+  // ==========================================================================
+  filterBookings() {
+    const search = (document.getElementById('searchBookingsInput')?.value || '').toLowerCase().trim();
+    const eventFilter = document.getElementById('filterEventType')?.value || '';
+    const payFilter = document.getElementById('filterPaymentStatus')?.value || '';
+    const confFilter = document.getElementById('filterConfirmationStatus')?.value || '';
+    const sortBy = document.getElementById('sortBookingsBy')?.value || 'date-asc';
+
+    let result = this.bookings.filter(b => {
+      // Search matches name, phone, id, location
+      if (search) {
+        const hay = `${b.Customer || ''} ${b.Phone || ''} ${b.BookingID || ''} ${b.Location || ''}`.toLowerCase();
+        if (!hay.includes(search)) return false;
+      }
+      if (eventFilter && b.Event !== eventFilter) return false;
+      if (payFilter && b.PaymentStatus !== payFilter) return false;
+      if (confFilter && b.Confirmation !== confFilter) return false;
+      return true;
+    });
+
+    // Sorting
+    result.sort((a, b) => {
+      if (sortBy === 'date-asc') return (a.EventDate || '').localeCompare(b.EventDate || '');
+      if (sortBy === 'date-desc') return (b.EventDate || '').localeCompare(a.EventDate || '');
+      if (sortBy === 'amount-desc') return (parseFloat(b.Total) || 0) - (parseFloat(a.Total) || 0);
+      if (sortBy === 'name-asc') return (a.Customer || '').localeCompare(b.Customer || '');
+      return 0;
+    });
+
+    this.filteredBookings = result;
+    this.renderBookingsTable();
+  }
+
+  renderBookingsTable() {
+    const tbody = document.getElementById('tbodyAllBookings');
+    if (!tbody) return;
+
+    const list = this.filteredBookings || this.bookings;
+    const total = list.length;
+    const totalPages = Math.ceil(total / this.itemsPerPage) || 1;
+    if (this.currentPage > totalPages) this.currentPage = totalPages;
+
+    const startIdx = (this.currentPage - 1) * this.itemsPerPage;
+    const pageItems = list.slice(startIdx, startIdx + this.itemsPerPage);
+
+    // Update pagination info
+    const infoEl = document.getElementById('paginationInfo');
+    if (infoEl) infoEl.textContent = `Showing ${total === 0 ? 0 : startIdx + 1} to ${Math.min(startIdx + this.itemsPerPage, total)} of ${total} bookings`;
+
+    if (pageItems.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--text-muted); padding: 32px;">No bookings match your selected criteria.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = pageItems.map(b => {
+      const pClass = b.PaymentStatus === 'Fully Paid' ? 'badge-paid' : (b.PaymentStatus === 'Partially Paid' ? 'badge-partial' : 'badge-pending');
+      const cClass = b.Confirmation === 'Confirmed' ? 'badge-confirmed' : (b.Confirmation === 'Cancelled' ? 'badge-cancelled' : 'badge-partial');
+
+      return `
+        <tr>
+          <td><code style="font-weight: 700; color: var(--emerald-900);">${b.BookingID}</code></td>
+          <td><strong>${DateUtils.formatDisplay(b.EventDate)}</strong></td>
+          <td><strong>${this.escapeHtml(b.Customer)}</strong></td>
+          <td>${this.escapeHtml(b.Phone || '-')}</td>
+          <td><span style="color: var(--emerald-850); font-weight: 600;">${this.escapeHtml(b.Event)}</span></td>
+          <td>${DateUtils.formatTime12H(b.Time)}</td>
+          <td style="max-width: 160px; overflow: hidden; text-overflow: ellipsis;">${this.escapeHtml(b.Location || '-')}</td>
+          <td>₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</td>
+          <td style="color: #0b7a47; font-weight: 600;">₹${(parseFloat(b.Advance) || 0).toLocaleString('en-IN')}</td>
+          <td style="color: #b91c1c; font-weight: 600;">₹${(parseFloat(b.Balance) || 0).toLocaleString('en-IN')}</td>
+          <td><span class="badge ${pClass}">${b.PaymentStatus}</span></td>
+          <td><span class="badge ${cClass}">${b.Confirmation || 'Confirmed'}</span></td>
+          <td style="text-align: right;">
+            <div class="action-btn-group" style="justify-content: flex-end;">
+              <button class="action-icon-btn" title="View Details & Receipt" onclick="app.viewBookingDetails('${b.BookingID}');"><i data-lucide="eye"></i></button>
+              <button class="action-icon-btn" title="Record Payment" onclick="app.openAddPaymentModal('${b.BookingID}');"><i data-lucide="credit-card"></i></button>
+              <button class="action-icon-btn" title="Edit Booking" onclick="app.editBooking('${b.BookingID}');"><i data-lucide="edit"></i></button>
+              <button class="action-icon-btn danger" title="Delete Booking" onclick="app.deleteBooking('${b.BookingID}');"><i data-lucide="trash-2"></i></button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    lucide.createIcons();
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.renderBookingsTable();
+    }
+  }
+
+  nextPage() {
+    const list = this.filteredBookings || this.bookings;
+    const totalPages = Math.ceil(list.length / this.itemsPerPage) || 1;
+    if (this.currentPage < totalPages) {
+      this.currentPage++;
+      this.renderBookingsTable();
+    }
+  }
+
+  // ==========================================================================
+  // VIEW BOOKING DETAILS & RECEIPT
+  // ==========================================================================
+  viewBookingDetails(bookingId) {
+    const b = this.bookings.find(item => item.BookingID === bookingId);
+    if (!b) return;
+
+    this.currentViewBooking = b;
+    const bPayments = this.payments.filter(p => p.BookingID === b.BookingID);
+
+    const titleEl = document.getElementById('viewModalTitle');
+    const contentEl = document.getElementById('viewModalContent');
+    const editBtn = document.getElementById('viewModalEditBtn');
+
+    titleEl.textContent = `Booking Details – ${b.BookingID}`;
+    editBtn.onclick = () => this.editBooking(b.BookingID);
+
+    contentEl.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+        <div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Client Name</span>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--emerald-950);">${this.escapeHtml(b.Customer)}</div>
+          <div style="font-size: 0.88rem; color: var(--text-muted);">${this.escapeHtml(b.Phone)}</div>
+        </div>
+
+        <div>
+          <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Event & Schedule</span>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--emerald-850);">${this.escapeHtml(b.Event)}</div>
+          <div style="font-size: 0.88rem; color: var(--text-muted);">
+            <strong>${DateUtils.formatDisplay(b.EventDate)}</strong> at <strong>${DateUtils.formatTime12H(b.Time)}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 12px 16px; background: #faf7ef; border-radius: 8px; margin-bottom: 20px; font-size: 0.86rem;">
+        <strong>Venue:</strong> ${this.escapeHtml(b.Location || 'Not specified')}<br>
+        <strong>Notes:</strong> ${this.escapeHtml(b.Notes || 'None')}
+      </div>
+
+      <div class="calc-preview-card" style="margin-bottom: 20px;">
+        <div class="calc-stat-item">
+          <span class="calc-stat-label">Total Contract</span>
+          <span class="calc-stat-val">₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</span>
+        </div>
+        <div class="calc-stat-item">
+          <span class="calc-stat-label">Total Received</span>
+          <span class="calc-stat-val" style="color: #0b7a47;">₹${(parseFloat(b.Advance) || 0).toLocaleString('en-IN')}</span>
+        </div>
+        <div class="calc-stat-item">
+          <span class="calc-stat-label">Pending Balance</span>
+          <span class="calc-stat-val" style="color: #b91c1c;">₹${(parseFloat(b.Balance) || 0).toLocaleString('en-IN')}</span>
+        </div>
+        <div class="calc-stat-item">
+          <span class="calc-stat-label">God's Tithe (1%)</span>
+          <span class="calc-stat-val" style="color: var(--gold-700);">₹${(parseFloat(b.Tithe) || 0).toLocaleString('en-IN')}</span>
+        </div>
+      </div>
+
+      <h4 style="font-family: var(--font-brand); font-size: 1rem; color: var(--emerald-950); margin-bottom: 10px;">Payment History</h4>
+      <div class="table-container" style="max-height: 180px; overflow-y: auto;">
+        <table class="data-table" style="font-size: 0.82rem;">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${bPayments.length === 0 ? `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No payment entries recorded yet.</td></tr>` : 
+              bPayments.map(p => `
+                <tr>
+                  <td>${DateUtils.formatDisplay(p.Date)}</td>
+                  <td style="color: #0b7a47; font-weight: 700;">₹${(parseFloat(p.Amount) || 0).toLocaleString('en-IN')}</td>
+                  <td>${this.escapeHtml(p.Method)}</td>
+                  <td>${this.escapeHtml(p.Notes || '-')}</td>
+                </tr>
+              `).join('')
+            }
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    this.openModal('bookingDetailsModal');
+    lucide.createIcons();
+  }
+
+  printCurrentBookingReceipt() {
+    if (!this.currentViewBooking) return;
+    const b = this.currentViewBooking;
+    const bPayments = this.payments.filter(p => p.BookingID === b.BookingID);
+
+    const container = document.getElementById('printableReceiptContent');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="receipt-header">
+        <div class="receipt-brand-title">${this.escapeHtml(this.settings.businessName)}</div>
+        <div class="receipt-brand-sub">Luxury Bridal & Fashion Makeup Studio</div>
+        <div style="font-size: 0.82rem; color: #4b5563; margin-top: 6px;">
+          Contact / WhatsApp: ${this.escapeHtml(this.settings.phone)} | Timezone: Asia/Kolkata
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 0.9rem;">
+        <div>
+          <strong>Billed To:</strong><br>
+          <span style="font-size: 1.1rem; font-weight: bold; color: #0f4033;">${this.escapeHtml(b.Customer)}</span><br>
+          Mobile: ${this.escapeHtml(b.Phone)}<br>
+          Location: ${this.escapeHtml(b.Location || 'Chennai')}
+        </div>
+        <div style="text-align: right;">
+          <strong>Receipt / Booking ID:</strong> <code>${b.BookingID}</code><br>
+          <strong>Booking Date:</strong> ${DateUtils.formatDisplay(b.Created ? b.Created.substring(0, 10) : DateUtils.todayIso())}<br>
+          <strong>Event Date:</strong> ${DateUtils.formatDisplay(b.EventDate)}<br>
+          <strong>Event Time:</strong> ${DateUtils.formatTime12H(b.Time)}
+        </div>
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 0.92rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid #0f4033; background: #f9fafb;">
+            <th style="text-align: left; padding: 10px;">Service Particulars</th>
+            <th style="text-align: right; padding: 10px;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #e5e7eb;">
+            <td style="padding: 12px 10px;">
+              <strong>${this.escapeHtml(b.Event)}</strong><br>
+              <span style="font-size: 0.82rem; color: #6b7280;">${this.escapeHtml(b.Notes || 'Premium bridal beauty & styling services')}</span>
+            </td>
+            <td style="text-align: right; padding: 12px 10px; font-weight: bold;">₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 style="font-size: 0.95rem; margin-bottom: 8px; color: #0f4033;">Payments Received:</h4>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 0.85rem;">
+        <thead>
+          <tr style="border-bottom: 1px solid #d1d5db; background: #f3f4f6;">
+            <th style="text-align: left; padding: 6px 10px;">Payment ID</th>
+            <th style="text-align: left; padding: 6px 10px;">Date</th>
+            <th style="text-align: left; padding: 6px 10px;">Method</th>
+            <th style="text-align: right; padding: 6px 10px;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${bPayments.length === 0 ? `<tr><td colspan="4" style="text-align: center; padding: 10px;">No payments recorded</td></tr>` : 
+            bPayments.map(p => `
+              <tr style="border-bottom: 1px solid #f3f4f6;">
+                <td style="padding: 6px 10px;">${p.PaymentID}</td>
+                <td style="padding: 6px 10px;">${DateUtils.formatDisplay(p.Date)}</td>
+                <td style="padding: 6px 10px;">${this.escapeHtml(p.Method)}</td>
+                <td style="text-align: right; padding: 6px 10px; font-weight: bold; color: #047857;">₹${(parseFloat(p.Amount) || 0).toLocaleString('en-IN')}</td>
+              </tr>
+            `).join('')
+          }
+        </tbody>
+      </table>
+
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 30px;">
+        <div style="width: 260px; font-size: 0.92rem; line-height: 1.8;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Total Booking Value:</span>
+            <strong>₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; color: #047857;">
+            <span>Total Paid to Date:</span>
+            <strong>₹${(parseFloat(b.Advance) || 0).toLocaleString('en-IN')}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; border-top: 2px solid #0f4033; padding-top: 6px; color: ${b.Balance > 0 ? '#b91c1c' : '#047857'};">
+            <span>Balance Due:</span>
+            <span>₹${(parseFloat(b.Balance) || 0).toLocaleString('en-IN')}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px dashed #d1d5db; padding-top: 20px; font-size: 0.8rem; color: #6b7280; text-align: center;">
+        Thank you for choosing Sangeetha's Makeup Artist! We look forward to making your special day memorable.
+      </div>
+    `;
+
+    window.print();
+  }
+
+  // ==========================================================================
+  // PAYMENTS MANAGEMENT
+  // ==========================================================================
+  openAddPaymentModal(targetBookingId = null) {
+    const select = document.getElementById('payModalBookingSelect');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">-- Select a Booking --</option>' + 
+      this.bookings.map(b => `
+        <option value="${b.BookingID}" ${targetBookingId === b.BookingID ? 'selected' : ''}>
+          ${this.escapeHtml(b.Customer)} – ${b.BookingID} (Due: ₹${(parseFloat(b.Balance) || 0).toLocaleString('en-IN')})
+        </option>
+      `).join('');
+
+    document.getElementById('payModalDate').value = DateUtils.todayIso();
+    document.getElementById('payModalAmount').value = '';
+    document.getElementById('payModalNotes').value = '';
+
+    if (targetBookingId) {
+      this.handlePayModalBookingChange(targetBookingId);
+    } else {
+      document.getElementById('payModalBookingInfo').innerHTML = 'Select a booking to view outstanding balance.';
+    }
+
+    this.openModal('addPaymentModal');
+  }
+
+  handlePayModalBookingChange(bookingId) {
+    const infoBox = document.getElementById('payModalBookingInfo');
+    const amountInput = document.getElementById('payModalAmount');
+    const b = this.bookings.find(item => item.BookingID === bookingId);
+
+    if (!b) {
+      infoBox.innerHTML = 'Select a booking to view details.';
+      return;
+    }
+
+    const bal = parseFloat(b.Balance) || 0;
+    infoBox.innerHTML = `
+      <strong>Customer:</strong> ${this.escapeHtml(b.Customer)} (${this.escapeHtml(b.Event)})<br>
+      <strong>Total Contract:</strong> ₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')} | 
+      <strong>Paid So Far:</strong> ₹${(parseFloat(b.Advance) || 0).toLocaleString('en-IN')}<br>
+      <span style="font-weight: 800; color: ${bal > 0 ? '#b91c1c' : '#047857'}; font-size: 0.95rem;">
+        Current Pending Balance: ₹${bal.toLocaleString('en-IN')}
+      </span>
+    `;
+
+    if (bal > 0 && !amountInput.value) {
+      amountInput.value = bal;
+    }
+  }
+
+  async handlePaymentSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('savePaymentBtn');
+    btn.disabled = true;
+
+    try {
+      const bookingId = document.getElementById('payModalBookingSelect').value;
+      const amount = parseFloat(document.getElementById('payModalAmount').value);
+      const date = DateUtils.toIsoDate(document.getElementById('payModalDate').value);
+      const method = document.getElementById('payModalMethod').value;
+      const notes = document.getElementById('payModalNotes').value.trim();
+
+      if (!bookingId) {
+        this.showToast('Please select a booking', 'warning');
+        btn.disabled = false;
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        this.showToast('Payment amount must be greater than zero', 'error');
+        btn.disabled = false;
+        return;
+      }
+
+      const b = this.bookings.find(item => item.BookingID === bookingId);
+      const bal = b ? (parseFloat(b.Balance) || 0) : 0;
+      if (amount > bal && bal > 0) {
+        if (!confirm(`Warning: The entered payment amount (₹${amount.toLocaleString('en-IN')}) is greater than the outstanding balance (₹${bal.toLocaleString('en-IN')}).\nDo you want to proceed with this payment?`)) {
+          btn.disabled = false;
+          return;
+        }
+      }
+
+      const pId = `PM-${DateUtils.todayIso().replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+      const paymentObj = {
+        PaymentID: pId,
+        BookingID: bookingId,
+        Date: date,
+        Amount: amount,
+        Method: method,
+        Notes: notes,
+        Created: new Date().toISOString()
+      };
+
+      if (this.settings.scriptUrl && this.settings.apiKey) {
+        this.showToast('Recording payment to Google Sheets...', 'warning');
+        const apiRes = await this.apiPost('savePayment', { payment: paymentObj });
+        if (!apiRes.ok) throw new Error(apiRes.error || 'Failed to record payment in Google Sheets');
+      }
+
+      // Local save
+      this.payments.unshift(paymentObj);
+      this.savePayments();
+      this.recalcAllBalances();
+
+      this.closeModal('addPaymentModal');
+      this.renderAll();
+      this.showToast(`Payment of ₹${amount.toLocaleString('en-IN')} recorded successfully!`, 'success');
+    } catch (err) {
+      console.error(err);
+      this.showToast(`Payment Error: ${err.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async deletePayment(paymentId) {
+    if (!confirm('Are you sure you want to delete this payment record?\nThe booking balance will be recalculated.')) {
+      return;
+    }
+
+    try {
+      if (this.settings.scriptUrl && this.settings.apiKey) {
+        this.showToast('Deleting payment on Google Sheets...', 'warning');
+        const res = await this.apiPost('deletePayment', { paymentId: paymentId });
+        if (!res.ok) throw new Error(res.error || 'Failed to delete on Google Sheets');
+      }
+
+      this.payments = this.payments.filter(p => p.PaymentID !== paymentId);
+      this.savePayments();
+      this.recalcAllBalances();
+      this.renderAll();
+      this.showToast('Payment record removed.', 'success');
+    } catch (err) {
+      console.error(err);
+      this.showToast(`Error: ${err.message}`, 'error');
+    }
+  }
+
+  renderPaymentsTable() {
+    const tbody = document.getElementById('tbodyPayments');
+    if (!tbody) return;
+
+    const search = (document.getElementById('searchPaymentsInput')?.value || '').toLowerCase().trim();
+    const methodFilter = document.getElementById('filterPaymentMethodSelect')?.value || '';
+
+    const list = this.payments.filter(p => {
+      const b = this.bookings.find(item => item.BookingID === p.BookingID);
+      const cName = b ? b.Customer : '';
+      if (search) {
+        const hay = `${p.PaymentID} ${p.BookingID} ${cName} ${p.Method} ${p.Notes || ''}`.toLowerCase();
+        if (!hay.includes(search)) return false;
+      }
+      if (methodFilter && p.Method !== methodFilter) return false;
+      return true;
+    });
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">No payment records found.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(p => {
+      const b = this.bookings.find(item => item.BookingID === p.BookingID);
+      const cName = b ? b.Customer : 'Unknown Customer';
+
+      return `
+        <tr>
+          <td><code style="font-weight: 700; color: var(--emerald-900);">${p.PaymentID}</code></td>
+          <td><a href="#" style="color: var(--gold-700); font-weight: 600;" onclick="app.viewBookingDetails('${p.BookingID}'); return false;">${p.BookingID}</a></td>
+          <td><strong>${this.escapeHtml(cName)}</strong></td>
+          <td><strong>${DateUtils.formatDisplay(p.Date)}</strong></td>
+          <td style="color: #0b7a47; font-weight: 800; font-size: 0.95rem;">₹${(parseFloat(p.Amount) || 0).toLocaleString('en-IN')}</td>
+          <td><span class="badge" style="background: #f4efe6; color: var(--emerald-950);">${this.escapeHtml(p.Method)}</span></td>
+          <td>${this.escapeHtml(p.Notes || '-')}</td>
+          <td style="font-size: 0.78rem; color: var(--text-muted);">${p.Created ? p.Created.replace('T', ' ').substring(0, 16) : '-'}</td>
+          <td style="text-align: right;">
+            <button class="action-icon-btn danger" title="Delete Payment" onclick="app.deletePayment('${p.PaymentID}');"><i data-lucide="trash-2"></i></button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    lucide.createIcons();
+  }
+
+  // ==========================================================================
+  // CALENDAR VIEW (MONTHLY GRID WITH TIMEZONE-SAFE EVENT PLACEMENT)
+  // ==========================================================================
+  calendarToday() {
+    this.calCurrentDate = new Date();
+    this.renderCalendar();
+  }
+
+  calendarPrev() {
+    if (!this.calCurrentDate) this.calCurrentDate = new Date();
+    this.calCurrentDate.setMonth(this.calCurrentDate.getMonth() - 1);
+    this.renderCalendar();
+  }
+
+  calendarNext() {
+    if (!this.calCurrentDate) this.calCurrentDate = new Date();
+    this.calCurrentDate.setMonth(this.calCurrentDate.getMonth() + 1);
+    this.renderCalendar();
+  }
+
+  renderCalendar() {
+    if (!this.calCurrentDate) this.calCurrentDate = new Date();
+    const curYear = this.calCurrentDate.getFullYear();
+    const curMonth = this.calCurrentDate.getMonth(); // 0-based
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const titleEl = document.getElementById('calendarMonthYearTitle');
+    if (titleEl) titleEl.textContent = `${monthNames[curMonth]} ${curYear}`;
+
+    const grid = document.getElementById('calendarDaysGrid');
+    if (!grid) return;
+
+    // First day of month
+    const firstDay = new Date(curYear, curMonth, 1).getDay(); // 0 = Sun
+    const daysInMonth = new Date(curYear, curMonth + 1, 0).getDate();
+    const daysInPrevMonth = new Date(curYear, curMonth, 0).getDate();
+
+    const todayIso = DateUtils.todayIso();
+    let html = '';
+
+    // Previous month filler days
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const pDay = daysInPrevMonth - i;
+      html += `<div class="cal-cell other-month"><div class="cal-cell-date">${pDay}</div></div>`;
+    }
+
+    // Days of current month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayIso = `${curYear}-${String(curMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const isToday = dayIso === todayIso;
+
+      // Find events matching this exact ISO date
+      const dayBookings = this.bookings.filter(b => b.EventDate === dayIso);
+
+      html += `
+        <div class="cal-cell ${isToday ? 'today' : ''}" onclick="app.handleCalendarDayClick('${dayIso}');">
+          <div class="cal-cell-date">
+            <span>${day}</span>
+            ${dayBookings.length > 0 ? `<span style="font-size: 0.7rem; color: var(--gold-700); font-weight: bold;">${dayBookings.length} event${dayBookings.length > 1 ? 's' : ''}</span>` : ''}
+          </div>
+          <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 3px;">
+            ${dayBookings.map(b => {
+              const statusClass = (b.Confirmation || 'Confirmed').toLowerCase();
+              return `
+                <div class="cal-event-pill ${statusClass}" title="${this.escapeHtml(b.Customer)} (${b.Event}) at ${DateUtils.formatTime12H(b.Time)}" onclick="event.stopPropagation(); app.viewBookingDetails('${b.BookingID}');">
+                  <strong>${DateUtils.formatTime12H(b.Time)}</strong> ${this.escapeHtml(b.Customer)}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Next month filler days to complete grid (42 cells total)
+    const totalFilled = firstDay + daysInMonth;
+    const remaining = (7 - (totalFilled % 7)) % 7;
+    for (let nextDay = 1; nextDay <= remaining; nextDay++) {
+      html += `<div class="cal-cell other-month"><div class="cal-cell-date">${nextDay}</div></div>`;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  handleCalendarDayClick(isoDate) {
+    const existing = this.bookings.filter(b => b.EventDate === isoDate);
+    if (existing.length === 1) {
+      this.viewBookingDetails(existing[0].BookingID);
+    } else if (existing.length > 1) {
+      // Switch to bookings tab filtered by this date
+      document.getElementById('searchBookingsInput').value = isoDate;
+      this.showTab('all-bookings');
+    } else {
+      // Prompt to create booking on this date
+      this.openNewBookingForm();
+      document.getElementById('formEventDate').value = isoDate;
+    }
+  }
+
+  // ==========================================================================
+  // STAFF EARNINGS
+  // ==========================================================================
+  renderStaffEarnings() {
+    const sangTotal = this.bookings.reduce((sum, b) => sum + (parseFloat(b.Sangeetha) || 0), 0);
+    const rizTotal = this.bookings.reduce((sum, b) => sum + (parseFloat(b.Rizwana) || 0), 0);
+    const combined = sangTotal + rizTotal;
+
+    document.getElementById('staffSangeethaTotal').textContent = `₹${sangTotal.toLocaleString('en-IN')}`;
+    document.getElementById('staffRizwanaTotal').textContent = `₹${rizTotal.toLocaleString('en-IN')}`;
+    document.getElementById('staffCombinedTotal').textContent = `₹${combined.toLocaleString('en-IN')}`;
+
+    const tbody = document.getElementById('tbodyStaffEarnings');
+    if (!tbody) return;
+
+    if (this.bookings.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No booking records available.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = this.bookings.map(b => {
+      const sAmt = parseFloat(b.Sangeetha) || 0;
+      const rAmt = parseFloat(b.Rizwana) || 0;
+      const pClass = b.PaymentStatus === 'Fully Paid' ? 'badge-paid' : (b.PaymentStatus === 'Partially Paid' ? 'badge-partial' : 'badge-pending');
+
+      return `
+        <tr>
+          <td><code style="font-weight: 700; color: var(--emerald-900);">${b.BookingID}</code></td>
+          <td><strong>${DateUtils.formatDisplay(b.EventDate)}</strong></td>
+          <td><strong>${this.escapeHtml(b.Customer)}</strong></td>
+          <td>${this.escapeHtml(b.Event)}</td>
+          <td>₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</td>
+          <td style="color: var(--emerald-900); font-weight: 700;">₹${sAmt.toLocaleString('en-IN')}</td>
+          <td style="color: var(--gold-700); font-weight: 700;">₹${rAmt.toLocaleString('en-IN')}</td>
+          <td><span class="badge ${pClass}">${b.PaymentStatus}</span></td>
+        </tr>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  // ==========================================================================
+  // GOD'S TITHE MANAGEMENT (1% OF GROSS BOOKING VALUE)
+  // ==========================================================================
+  renderTitheTable() {
+    const totalTithe = this.bookings.reduce((sum, b) => sum + (parseFloat(b.Tithe) || 0), 0);
+    const curMonth = DateUtils.todayIso().substring(0, 7);
+    const monthTithe = this.bookings.filter(b => b.EventDate && b.EventDate.startsWith(curMonth))
+                                    .reduce((sum, b) => sum + (parseFloat(b.Tithe) || 0), 0);
+
+    document.getElementById('titheTotalOffering').textContent = `₹${totalTithe.toLocaleString('en-IN')}`;
+    document.getElementById('titheMonthOffering').textContent = `₹${monthTithe.toLocaleString('en-IN')}`;
+    document.getElementById('titheCount').textContent = this.bookings.length;
+
+    const tbody = document.getElementById('tbodyTitheRecords');
+    if (!tbody) return;
+
+    if (this.bookings.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No tithe entries recorded yet.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = this.bookings.map(b => `
+      <tr>
+        <td><code style="font-weight: 700; color: var(--emerald-900);">${b.BookingID}</code></td>
+        <td><strong>${DateUtils.formatDisplay(b.EventDate)}</strong></td>
+        <td><strong>${this.escapeHtml(b.Customer)}</strong></td>
+        <td>₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</td>
+        <td style="color: var(--gold-700); font-weight: 800; font-size: 0.95rem;">₹${(parseFloat(b.Tithe) || 0).toLocaleString('en-IN')}</td>
+      </tr>
+    `).join('');
+    lucide.createIcons();
+  }
+
+  // ==========================================================================
+  // REPORTS ENGINE
+  // ==========================================================================
+  generateReport() {
+    const container = document.getElementById('reportOutputContainer');
+    const type = document.getElementById('reportTypeSelect')?.value || 'revenue-monthly';
+    const filter = document.getElementById('reportDateFilter')?.value || 'all';
+
+    let list = [...this.bookings];
+    const today = DateUtils.todayIso();
+    const curYear = today.substring(0, 4);
+    const curMonth = today.substring(0, 7);
+
+    if (filter === 'this-month') list = list.filter(b => b.EventDate && b.EventDate.startsWith(curMonth));
+    if (filter === 'this-year') list = list.filter(b => b.EventDate && b.EventDate.startsWith(curYear));
+
+    let reportHtml = '';
+
+    if (type === 'revenue-monthly') {
+      const monthMap = {};
+      list.forEach(b => {
+        const m = b.EventDate ? b.EventDate.substring(0, 7) : 'Unknown';
+        if (!monthMap[m]) monthMap[m] = { revenue: 0, advance: 0, balance: 0, count: 0 };
+        monthMap[m].revenue += (parseFloat(b.Total) || 0);
+        monthMap[m].advance += (parseFloat(b.Advance) || 0);
+        monthMap[m].balance += (parseFloat(b.Balance) || 0);
+        monthMap[m].count += 1;
+      });
+
+      reportHtml = `
+        <h4 style="font-family: var(--font-brand); color: var(--emerald-950); margin-bottom: 14px;">Monthly Revenue Summary</h4>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Bookings Count</th>
+                <th>Gross Revenue</th>
+                <th>Collected (Advance)</th>
+                <th>Outstanding Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Object.keys(monthMap).sort().reverse().map(m => `
+                <tr>
+                  <td><strong>${m}</strong></td>
+                  <td>${monthMap[m].count}</td>
+                  <td><strong>₹${monthMap[m].revenue.toLocaleString('en-IN')}</strong></td>
+                  <td style="color: #0b7a47; font-weight: 700;">₹${monthMap[m].advance.toLocaleString('en-IN')}</td>
+                  <td style="color: #b91c1c; font-weight: 700;">₹${monthMap[m].balance.toLocaleString('en-IN')}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } else if (type === 'pending-balance') {
+      const pendingList = list.filter(b => (parseFloat(b.Balance) || 0) > 0);
+      const totalPending = pendingList.reduce((sum, b) => sum + (parseFloat(b.Balance) || 0), 0);
+
+      reportHtml = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h4 style="font-family: var(--font-brand); color: var(--emerald-950);">Outstanding Balances Due</h4>
+          <span style="font-weight: 800; font-size: 1.15rem; color: #b91c1c;">Total Uncollected: ₹${totalPending.toLocaleString('en-IN')}</span>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Event Date</th>
+                <th>Total Contract</th>
+                <th>Paid So Far</th>
+                <th>Balance Due</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pendingList.length === 0 ? `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No pending balances outstanding!</td></tr>` : 
+                pendingList.map(b => `
+                  <tr>
+                    <td><strong>${this.escapeHtml(b.Customer)}</strong></td>
+                    <td>${this.escapeHtml(b.Phone)}</td>
+                    <td>${DateUtils.formatDisplay(b.EventDate)}</td>
+                    <td>₹${(parseFloat(b.Total) || 0).toLocaleString('en-IN')}</td>
+                    <td style="color: #0b7a47;">₹${(parseFloat(b.Advance) || 0).toLocaleString('en-IN')}</td>
+                    <td style="color: #b91c1c; font-weight: 800;">₹${(parseFloat(b.Balance) || 0).toLocaleString('en-IN')}</td>
+                    <td><button class="btn-gold header-btn" style="padding: 4px 10px; font-size: 0.78rem;" onclick="app.openAddPaymentModal('${b.BookingID}');">Collect Payment</button></td>
+                  </tr>
+                `).join('')
+              }
+            </tbody>
+          </table>
+        </div>
+      `;
+    } else {
+      // Default report view
+      reportHtml = `<div style="padding: 24px; text-align: center; color: var(--text-muted);">Report ready. Use the filters above to toggle between revenue, outstanding balances, staff, and tithe statements.</div>`;
+    }
+
+    container.innerHTML = reportHtml;
+  }
+
+  // ==========================================================================
+  // GOOGLE APPS SCRIPT API INTEGRATION
+  // ==========================================================================
+  async testConnection() {
+    const url = document.getElementById('settingsScriptUrl').value.trim();
+    const key = document.getElementById('settingsApiKey').value.trim();
+    const btn = document.getElementById('btnTestConn');
+
+    if (!url) {
+      this.showToast('Please enter your Google Apps Script Web App URL', 'warning');
+      return;
+    }
+
+    btn.disabled = true;
+    this.showToast('Pinging Google Apps Script endpoint...', 'warning');
+
+    try {
+      const pingUrl = `${url}?action=ping&key=${encodeURIComponent(key)}`;
+      const res = await fetch(pingUrl, { method: 'GET' });
+      const data = await res.json();
+
+      if (data.ok) {
+        if (data.authenticated) {
+          this.showToast('Connection verified successfully! Authenticated with Google Sheets.', 'success');
+          this.updateSyncBadge('connected', 'Connected to Google Sheets', 'Live cloud database');
+        } else {
+          this.showToast('Connected, but API Key is missing or invalid in Script Properties.', 'warning');
+          this.updateSyncBadge('demo', 'Key Verification Needed', 'Check API Key');
+        }
+      } else {
+        throw new Error(data.error || 'Server reported error');
+      }
+    } catch (err) {
+      console.error(err);
+      this.showToast(`Connection Test Failed: ${err.message}`, 'error');
+      this.updateSyncBadge('error', 'Connection Error', 'Check Web App URL');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async saveConnectionSettings() {
+    const url = document.getElementById('settingsScriptUrl').value.trim();
+    const key = document.getElementById('settingsApiKey').value.trim();
+
+    this.settings.scriptUrl = url;
+    this.settings.apiKey = key;
+    this.saveSettings();
+
+    this.showToast('API Connection Settings saved in browser storage.', 'success');
+    if (url && key) {
+      await this.syncFromSheets();
+    }
+  }
+
+  saveStudioProfile() {
+    this.settings.businessName = document.getElementById('settingBusinessName').value.trim() || "SANGEETHA'S MAKEUP ARTIST";
+    this.settings.phone = document.getElementById('settingPhone').value.trim() || "+91 98765 43210";
+    this.settings.staff1 = document.getElementById('settingStaff1').value.trim() || "Sangeetha";
+    this.settings.staff2 = document.getElementById('settingStaff2').value.trim() || "Rizwana";
+    this.settings.tithePercent = parseFloat(document.getElementById('settingTithePct').value) || 1;
+
+    this.saveSettings();
+    this.recalcAllBalances();
+    this.renderAll();
+    this.showToast('Studio Business Profile updated!', 'success');
+  }
+
+  async forceSyncFromSheets() {
+    await this.syncFromSheets(false);
+  }
+
+  async syncFromSheets(silent = false) {
+    if (!this.settings.scriptUrl || !this.settings.apiKey) {
+      if (!silent) this.showToast('Please configure Web App URL & API Key in Settings first', 'warning');
+      return;
+    }
+
+    const btn = document.getElementById('btnForceSync');
+    if (btn) btn.disabled = true;
+
+    try {
+      if (!silent) this.showToast('Syncing all data with Google Sheets...', 'warning');
+      const fetchUrl = `${this.settings.scriptUrl}?action=getAll&key=${encodeURIComponent(this.settings.apiKey)}`;
+      const res = await fetch(fetchUrl);
+      const json = await res.json();
+
+      if (json.ok && json.data) {
+        if (Array.isArray(json.data.bookings) && json.data.bookings.length > 0) {
+          this.bookings = json.data.bookings;
+          this.saveBookings();
+        }
+        if (Array.isArray(json.data.payments) && json.data.payments.length > 0) {
+          this.payments = json.data.payments;
+          this.savePayments();
+        }
+
+        this.recalcAllBalances();
+        this.renderAll();
+        this.updateSyncBadge('connected', 'Connected to Google Sheets', 'Live cloud database');
+        if (!silent) this.showToast('Database synchronized with Google Sheets successfully!', 'success');
+      } else {
+        throw new Error(json.error || 'Invalid API response structure');
+      }
+    } catch (err) {
+      console.error(err);
+      if (!silent) this.showToast(`Sync Failed: ${err.message}`, 'error');
+      this.updateSyncBadge('demo', 'Local / Offline Mode', 'Click to reconnect');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  async apiPost(action, payload) {
+    if (!this.settings.scriptUrl) {
+      throw new Error('Web App URL not configured');
+    }
+
+    const body = Object.assign({
+      action: action,
+      key: this.settings.apiKey
+    }, payload);
+
+    const res = await fetch(this.settings.scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    });
+
+    return await res.json();
+  }
+
+  // ==========================================================================
+  // CSV EXPORTS & BACKUP
+  // ==========================================================================
+  exportBookingsCSV() {
+    const headers = ['BookingID', 'EventDate', 'Customer', 'Phone', 'Event', 'Time', 'Location', 'Total', 'Advance', 'Balance', 'Sangeetha', 'Rizwana', 'Tithe', 'PaymentStatus', 'Confirmation'];
+    const rows = this.bookings.map(b => [
+      b.BookingID,
+      b.EventDate,
+      `"${(b.Customer || '').replace(/"/g, '""')}"`,
+      `"${b.Phone || ''}"`,
+      `"${b.Event || ''}"`,
+      b.Time || '',
+      `"${(b.Location || '').replace(/"/g, '""')}"`,
+      b.Total || 0,
+      b.Advance || 0,
+      b.Balance || 0,
+      b.Sangeetha || 0,
+      b.Rizwana || 0,
+      b.Tithe || 0,
+      b.PaymentStatus,
+      b.Confirmation
+    ]);
+
+    this.downloadCsv(`Sangeethas_Bookings_${DateUtils.todayIso()}.csv`, headers, rows);
+  }
+
+  exportStaffEarningsCSV() {
+    const headers = ['BookingID', 'EventDate', 'Customer', 'Event', 'TotalContract', 'SangeethaShare', 'RizwanaShare', 'PaymentStatus'];
+    const rows = this.bookings.map(b => [
+      b.BookingID,
+      b.EventDate,
+      `"${(b.Customer || '').replace(/"/g, '""')}"`,
+      `"${b.Event || ''}"`,
+      b.Total || 0,
+      b.Sangeetha || 0,
+      b.Rizwana || 0,
+      b.PaymentStatus
+    ]);
+
+    this.downloadCsv(`Sangeethas_Staff_Earnings_${DateUtils.todayIso()}.csv`, headers, rows);
+  }
+
+  exportTitheCSV() {
+    const headers = ['BookingID', 'EventDate', 'Customer', 'BookingAmount', 'TitheOffering'];
+    const rows = this.bookings.map(b => [
+      b.BookingID,
+      b.EventDate,
+      `"${(b.Customer || '').replace(/"/g, '""')}"`,
+      b.Total || 0,
+      b.Tithe || 0
+    ]);
+
+    this.downloadCsv(`Gods_Tithe_Statement_${DateUtils.todayIso()}.csv`, headers, rows);
+  }
+
+  downloadCsv(filename, headers, rows) {
+    let csvContent = '\uFEFF' + headers.join(',') + '\n';
+    rows.forEach(r => {
+      csvContent += r.join(',') + '\n';
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    this.showToast(`CSV downloaded: ${filename}`, 'success');
+  }
+
+  downloadJsonBackup() {
+    const backupData = {
+      exportedAt: new Date().toISOString(),
+      businessName: this.settings.businessName,
+      bookings: this.bookings,
+      payments: this.payments,
+      titheRecords: this.titheRecords
+    };
+
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Sangeethas_Makeup_Backup_${DateUtils.todayIso()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    this.showToast('Full JSON backup downloaded.', 'success');
+  }
+
+  resetDemoData() {
+    if (!confirm('Reset local database to initial demo records?\nThis will overwrite current local storage with sample bookings.')) return;
+    this.bookings = JSON.parse(JSON.stringify(SEED_BOOKINGS));
+    this.payments = JSON.parse(JSON.stringify(SEED_PAYMENTS));
+    this.saveBookings();
+    this.savePayments();
+    this.renderAll();
+    this.showToast('Demo data restored successfully.', 'success');
+  }
+
+  // ==========================================================================
+  // UI UTILITIES: MODALS, TOASTS & ESCAPING
+  // ==========================================================================
+  openModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) el.classList.add('active');
+  }
+
+  closeModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) el.classList.remove('active');
+  }
+
+  showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    let iconName = 'info';
+    if (type === 'success') iconName = 'check-circle';
+    if (type === 'error') iconName = 'alert-triangle';
+    if (type === 'warning') iconName = 'alert-circle';
+
+    toast.innerHTML = `<i data-lucide="${iconName}"></i> <span>${this.escapeHtml(message)}</span>`;
+    container.appendChild(toast);
+    lucide.createIcons();
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  escapeHtml(str) {
+    if (!str && str !== 0) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+}
+
+// Global Application Instantiation
+const app = new SangeethasApp();
+document.addEventListener('DOMContentLoaded', () => {
+  app.init();
+});
+</script>
+
+</body>
+</html>
